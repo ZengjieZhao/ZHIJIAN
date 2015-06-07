@@ -1,4 +1,4 @@
-package com.zzj.zhijian.entity;
+package com.zzj.zhijian.bean;
 
 public class DataCount {
 	private Integer time;

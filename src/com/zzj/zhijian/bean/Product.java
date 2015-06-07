@@ -1,4 +1,4 @@
-package com.zzj.zhijian.entity;
+package com.zzj.zhijian.bean;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -28,7 +28,8 @@ public class Product
 
 	private int id; // 编号
 	private String name; // 商品名称
-	private int price; // 价格
+	private float price; // 价格
+	private float costprice;//成本价
 	private int stock; // 库存
 	private String proPic; // 商品图片
 	private String description; // 描述
@@ -64,14 +65,25 @@ public class Product
 		this.name = name;
 	}
 
-	public int getPrice()
+	public float getPrice()
 	{
 		return price;
 	}
 
-	public void setPrice(int price)
+	public void setPrice(float price)
 	{
 		this.price = price;
+	}
+
+	
+	public float getCostprice()
+	{
+		return costprice;
+	}
+
+	public void setCostprice(float costprice)
+	{
+		this.costprice = costprice;
 	}
 
 	public int getStock()
@@ -171,12 +183,12 @@ public class Product
 
 	@OneToMany
 	@JoinColumn(name = "productId")
-	public List<OrderItem> getorderItemList()
+	public List<OrderItem> getOrderItemList()
 	{
 		return orderItemList;
 	}
 
-	public void setorderItemList(List<OrderItem> orderItemList)
+	public void setOrderItemList(List<OrderItem> orderItemList)
 	{
 		this.orderItemList = orderItemList;
 	}

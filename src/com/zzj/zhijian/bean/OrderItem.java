@@ -1,4 +1,4 @@
-package com.zzj.zhijian.entity;
+package com.zzj.zhijian.bean;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;

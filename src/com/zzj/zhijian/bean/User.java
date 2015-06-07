@@ -1,4 +1,4 @@
-package com.zzj.zhijian.entity;
+package com.zzj.zhijian.bean;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -37,6 +37,7 @@ public class User
 	private String email; // 邮件
 	private String mobile; // 联系电话
 	private String address; // 收货地址
+	private float balance;//余额
 	private int status = 1; // 1 普通用户 
 	private List<Order> orderList = new ArrayList<Order>(); // 订单
 
@@ -149,6 +150,16 @@ public class User
 	public void setAddress(String address)
 	{
 		this.address = address;
+	}
+
+	public float getBalance()
+	{
+		return balance;
+	}
+
+	public void setBalance(float balance)
+	{
+		this.balance = balance;
 	}
 
 	public int getStatus()
