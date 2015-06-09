@@ -73,6 +73,8 @@ $(function(){
 	
 	setTotal();
 	
+	
+	
 });
 
 function removeShopping(productId){
@@ -80,12 +82,29 @@ function removeShopping(productId){
 		window.location.href="shopping_removeShoppingCartItem.action?productId="+productId;
 	}
 }	
+
+function submit(){
+	var status = $("#status").text();
+	if(status==null||status == ""){
+		alert("您的购物车内没有商品，欢迎您前去购物！");
+		return false;
+	}else{
+		var fm = document.createElement("form");
+		document.body.appendChild(fm);
+		fm.action = "order_save.action";
+		fm.method = "post";
+		fm.submit();
+	}
+	
+	//$("#fm_shopping").submit();
+}
+
 </script>
 </head>
 <body>
 	<div id="shopping">
-				<form action="order_save.action" method="post">
-			<table id="myTableProduct">
+<!-- 				<form id="fm_shopping" action="order_save.action" method="post" onsubmit="return submit()">
+ -->			<table id="myTableProduct">
 				<tr>
 					<th>商品名称</th>
 					<th>商品单价</th>
@@ -94,6 +113,7 @@ function removeShopping(productId){
 					<th>操作</th>
 				</tr>
 				<c:forEach items="${shoppingCart.shoppingCartItems }" var="shoppingCartItem">
+				<span id="status">${shoppingCart }</span>
 					<tr class="productTr">
 						<td class="thumb">
 							<img class="imgs" src="${shoppingCartItem.product.proPic }" /><a href="product_showProduct.action?productId=${shoppingCartItem.product.id }" target="_blank">${fn:substring(shoppingCartItem.product.name,0,20)}</a>
@@ -117,9 +137,9 @@ function removeShopping(productId){
 			</table>
 
 			<div class="button">
-				<input type="submit" value="" />
+				<input type="submit" value="" onclick="javascript:submit()"/>
 			</div>
-		</form>
+		<!-- </form> -->
 </div>
 
 <div class="shopping_list_end">
