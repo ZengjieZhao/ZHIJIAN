@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -12,10 +13,10 @@
 <%@include file="common/sitenav.jsp" %>
 </div>
 <div style="clear: both;"></div>
-<div id="header" class="wrap">
+<div id="header" class="format">
 	<jsp:include page="common/top.jsp"/>
 </div>
-<div id="main" class="wrap">
+<div id="main" class="format">
 	<div class="lefter">
 		<jsp:include page="common/left.jsp"/>
 	</div>
@@ -24,10 +25,10 @@
 				<h2>今日特价</h2>
 				<ul class="product clearfix" style="padding-left:30px;">
 					<c:forEach items="${specialPriceProductList }" var="spProduct">
-						<li style="margin-left:20px;">
+						<li style="margin-left:20px; ">
 							<dl>
 								<dt>
-									<a href="product_showProduct.action?productId=${spProduct.id }" target="_blank"><img src="${spProduct.proPic }"/></a>
+									<a href="product_showProduct.action?productId=${spProduct.id }" target="_blank"><img src="${spProduct.proPic }" width="190px" height="190px"/></a>
 								</dt>
 								<dd class="title">
 									<a href="product_showProduct.action?productId=${spProduct.id }" target="_blank">${spProduct.name }</a>
@@ -43,10 +44,10 @@
 			<div class="side">
 
 				<div class="news-list">
-					<h4>最新公告</h4>
+					<h4>商城快报</h4>
 					<ul>
 						<c:forEach items="${noticeList }" var="notice">
-							<li><a href="notice_showNotice.action?noticeId=${notice.id }">${notice.title }</a></li>
+							<li><a href="notice_showNotice.action?noticeId=${notice.id }">${fn:substring(notice.title, 0, 12)  }</a></li>
 						</c:forEach>
 					</ul>
 				</div>
@@ -55,7 +56,7 @@
 					<h4>新闻动态</h4>
 					<ul>
 						<c:forEach items="${newsList }" var="news">
-							<li><a href="news_showNews.action?newsId=${news.id }">${news.title }</a></li>
+							<li><a href="news_showNews.action?newsId=${news.id }">${fn:substring(news.title, 0, 12) }</a></li>
 						</c:forEach>
 					</ul>
 				</div>

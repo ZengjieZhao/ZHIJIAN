@@ -36,7 +36,7 @@
         <!-- 自动扫描注解方式配置的hibernate类文件 -->  
         <property name="packagesToScan">  
             <list>  
-                <value>com.zzj.zhijian.entity</value>  
+                <value>com.zzj.zhijian.bean</value>  
             </list>  
         </property>  
     </bean>  
@@ -60,7 +60,8 @@
             <tx:method name="set*" propagation="REQUIRED" />  
             <tx:method name="remove*" propagation="REQUIRED" />  
             <tx:method name="delete*" propagation="REQUIRED" />  
-            <tx:method name="change*" propagation="REQUIRED" />  
+            <tx:method name="change*" propagation="REQUIRED" /> 
+            <tx:method name="balance*" propagation="REQUIRED" /> 
             <tx:method name="get*" propagation="REQUIRED" read-only="true" />  
             <tx:method name="find*" propagation="REQUIRED" read-only="true" />  
             <tx:method name="load*" propagation="REQUIRED" read-only="true" />  

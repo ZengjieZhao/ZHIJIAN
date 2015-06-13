@@ -11,12 +11,12 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
 
-import com.zzj.zhijian.entity.News;
-import com.zzj.zhijian.entity.Notice;
-import com.zzj.zhijian.entity.PageBean;
-import com.zzj.zhijian.entity.Product;
-import com.zzj.zhijian.entity.ProductBigType;
-import com.zzj.zhijian.entity.Tag;
+import com.zzj.zhijian.bean.News;
+import com.zzj.zhijian.bean.Notice;
+import com.zzj.zhijian.bean.PageBean;
+import com.zzj.zhijian.bean.Product;
+import com.zzj.zhijian.bean.ProductBigType;
+import com.zzj.zhijian.bean.Tag;
 import com.zzj.zhijian.service.NewsService;
 import com.zzj.zhijian.service.NoticeService;
 import com.zzj.zhijian.service.ProductBigTypeService;
@@ -83,7 +83,7 @@ public class InitAction implements ServletContextListener,
 		s_product = new Product();
 		s_product.setHot(1);
 		List<Product> hotProductList = productService.findProductList(
-				s_product, new PageBean(1, 7));
+				s_product, new PageBean(1, 9));
 		application.setAttribute("hotProductList", hotProductList);
 	}
 

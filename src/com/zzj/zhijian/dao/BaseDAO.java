@@ -3,7 +3,7 @@ package com.zzj.zhijian.dao;
 import java.io.Serializable;
 import java.util.List;
 
-import com.zzj.zhijian.entity.PageBean;
+import com.zzj.zhijian.bean.PageBean;
 
 /**
  * 基础数据库操作类

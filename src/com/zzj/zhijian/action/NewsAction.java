@@ -9,15 +9,12 @@ import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import net.sf.json.JsonConfig;
 
-import org.apache.struts2.ServletActionContext;
 import org.springframework.stereotype.Controller;
 
 import com.opensymphony.xwork2.ActionSupport;
-import com.zzj.zhijian.entity.News;
-import com.zzj.zhijian.entity.PageBean;
+import com.zzj.zhijian.bean.News;
+import com.zzj.zhijian.bean.PageBean;
 import com.zzj.zhijian.service.NewsService;
-import com.zzj.zhijian.util.NavUtil;
-import com.zzj.zhijian.util.ResponseUtil;
 
 /**
  * 新闻Action类
@@ -46,6 +43,23 @@ public class NewsAction extends ActionSupport
 	private String rows;
 	private News s_news;
 	private String ids;
+	private JSONObject responseJson ; 
+	
+	
+	public JSONObject getResponseJson()
+	{
+		return responseJson;
+	}
+
+	public void setResponseJson(JSONObject responseJson)
+	{
+		this.responseJson = responseJson;
+	}
+
+	public NewsAction()
+	{
+		responseJson = new JSONObject();
+	}
 
 	public String getPage()
 	{
@@ -137,7 +151,7 @@ public class NewsAction extends ActionSupport
 	{
 		news = newsService.getNewsById(newsId);
 		mainPage = "news/newsDetails.jsp";
-		navCode = NavUtil.genNavCode("新闻信息");
+		navCode = "新闻信息";
 		return SUCCESS;
 	}
 
@@ -157,11 +171,10 @@ public class NewsAction extends ActionSupport
 		jsonConfig.registerJsonValueProcessor(java.util.Date.class,
 				new DateJsonValueProcessor("yyyy-MM-dd"));
 		JSONArray rows = JSONArray.fromObject(newsList, jsonConfig);
-		JSONObject result = new JSONObject();
-		result.put("rows", rows);
-		result.put("total", total);
-		ResponseUtil.write(ServletActionContext.getResponse(), result);
-		return null;
+		responseJson.clear();
+		responseJson.put("rows", rows);
+		responseJson.put("total", total);
+		return "json";
 	}
 
 	/**
@@ -177,10 +190,9 @@ public class NewsAction extends ActionSupport
 			news.setCreateTime(new Date());
 		}
 		newsService.saveNews(news);
-		JSONObject result = new JSONObject();
-		result.put("success", true);
-		ResponseUtil.write(ServletActionContext.getResponse(), result);
-		return null;
+		responseJson.clear();
+		responseJson.put("success", true);
+		return "json";
 	}
 
 	/**
@@ -191,16 +203,15 @@ public class NewsAction extends ActionSupport
 	 */
 	public String delete() throws Exception
 	{
-		JSONObject result = new JSONObject();
 		String[] idsStr = ids.split(",");
 		for (int i = 0; i < idsStr.length; i++)
 		{
 			News news = newsService.getNewsById(Integer.parseInt(idsStr[i]));
 			newsService.delete(news);
 		}
-		result.put("success", true);
-		ResponseUtil.write(ServletActionContext.getResponse(), result);
-		return null;
+		responseJson.clear();
+		responseJson.put("success", true);
+		return "json";
 	}
 
 }

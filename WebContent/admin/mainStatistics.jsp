@@ -54,10 +54,15 @@
 					status) {
 				if (status == 'success') {
 					$('#totalSales').html(data.totalSales);
+					$('#totalProfit').html(data.totalProfit);
 					$('#lastYearTotalSales').html(
 							parseFloat(data.lastYearTotalSales));
+					$('#lastYearTotalProfit').html(
+							parseFloat(data.lastYearTotalProfit));
 					$('#thisYearTotalSales').html(
 							parseFloat(data.thisYearTotalSales));
+					$('#thisYearTotalProfit').html(
+							parseFloat(data.thisYearTotalProfit));
 					$('#tNumberOfOrder').html(data.tNumberOfOrder);
 					$('#tNumberOfMember').html(data.tNumberOfMember);
 					$('#tNumberOfNoBuyMember').html(data.tNumberOfNoBuyMember);
@@ -134,7 +139,7 @@
 		<tr>
 			<td>
 				<div id="mainStatistic_panel1"
-					style="width: 501px; height: 264px; border: 1px solid #95B8E7; margin: 20px 20px;">
+					style="width: 501px; height: 340px; border: 1px solid #95B8E7; margin: 20px 20px;">
 					<div
 						style="background-color: #E0ECFF; border-bottom: 1px solid #95B8E7; width: 100%; height: 24px;">
 						<span style="line-height: 22px;">商店统计</span><a
@@ -148,12 +153,24 @@
 							<td><span id="totalSales"></span>(元)</td>
 						</tr>
 						<tr>
+							<td>销售总利润：</td>
+							<td><span id="totalProfit"></span>(元)</td>
+						</tr>
+						<tr>
 							<td>上年全年销售:</td>
 							<td><span id="lastYearTotalSales"></span>(元)</td>
 						</tr>
 						<tr>
+							<td>上年全年销售总利润:</td>
+							<td><span id="lastYearTotalProfit"></span>(元)</td>
+						</tr>
+						<tr>
 							<td>今年全年销售(至今):</td>
 							<td><span id="thisYearTotalSales"></span>(元)</td>
+						</tr>
+						<tr>
+							<td>今年全年销售总利润(至今):</td>
+							<td><span id="thisYearTotalProfit"></span>(元)</td>
 						</tr>
 						<tr>
 							<td>总订单数:</td>
@@ -173,7 +190,7 @@
 
 			<td>
 				<div id="mainStatistics_panel2"
-					style="width: 501px; border: 1px solid #95B8E7; margin: 20px 20px;">
+					style="width: 501px; border: 1px solid #95B8E7;">
 					<div
 						style="background-color: #E0ECFF; border-bottom: 1px solid #95B8E7; width: 100%; height: 24px;">
 						<span style="line-height: 22px;">商店统计表</span> <span
@@ -188,7 +205,7 @@
 						</select> </span>
 					</div>
 					<div id="mainStatistics_panel2_chart"
-						style="min-width: 200px; max-width: 500px; height: 240px;"></div>
+						style="min-width: 200px; max-width: 500px; height: 316px;"></div>
 				</div>
 			</td>
 		</tr>

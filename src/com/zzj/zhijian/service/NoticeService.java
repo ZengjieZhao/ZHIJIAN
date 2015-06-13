@@ -2,8 +2,8 @@ package com.zzj.zhijian.service;
 
 import java.util.List;
 
-import com.zzj.zhijian.entity.Notice;
-import com.zzj.zhijian.entity.PageBean;
+import com.zzj.zhijian.bean.Notice;
+import com.zzj.zhijian.bean.PageBean;
 
 /**
  * π´∏ÊService¿‡

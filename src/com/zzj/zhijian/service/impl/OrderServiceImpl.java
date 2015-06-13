@@ -9,11 +9,11 @@ import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
 
+import com.zzj.zhijian.bean.DataCount;
+import com.zzj.zhijian.bean.Order;
+import com.zzj.zhijian.bean.OrderItem;
+import com.zzj.zhijian.bean.PageBean;
 import com.zzj.zhijian.dao.BaseDAO;
-import com.zzj.zhijian.entity.Order;
-import com.zzj.zhijian.entity.DataCount;
-import com.zzj.zhijian.entity.OrderItem;
-import com.zzj.zhijian.entity.PageBean;
 import com.zzj.zhijian.service.OrderService;
 import com.zzj.zhijian.util.StringUtil;
 
@@ -30,23 +30,13 @@ public class OrderServiceImpl implements OrderService {
 	private BaseDAO<Order> baseDAO;
 
 	@Override
-	public void saveOrder(Order order)
+	public int saveOrder(Order order)
 	{
 		// TODO Auto-generated method stub
 		// 插入新订单
-		baseDAO.save(order);
-		// 更新订单中的商品库存减去已购买的数量
-		List<OrderItem> list = order.getOrderItemList();
-		for (OrderItem op : list)
-		{
-			List<Object> param = new LinkedList<Object>();
-			int id = op.getProduct().getId();
-			int num = op.getNum();
-			param.add(num);
-			param.add(id);
-			String hql = "update Product p set p.stock = p.stock-? where p.id = ?";
-			baseDAO.executeHql(hql, param);
-		}
+		int id = (Integer) baseDAO.save(order);
+		return id;
+		
 	}
 
 	@Override
@@ -138,14 +128,22 @@ public class OrderServiceImpl implements OrderService {
 	{
 		return baseDAO.get(Order.class, id);
 	}
-
+	public Order getOrderByOrderNo(String orderNo){
+		String hql = "from Order where orderNo="+orderNo;
+		
+		Order o = (Order) baseDAO.executeCommonhqlQeury(hql).get(0);
+		return o;
+	}
 	@Override
-	public Double getTotalSales(int n)
+ 	public Double getTotalSales(int n)
 	{
 		StringBuffer hql = new StringBuffer("select sum(cost) from Order");
 		Calendar cal = Calendar.getInstance();
 		int year = cal.get(Calendar.YEAR);
 		List<Object> param = new LinkedList<Object>();
+		if(n == 1){
+			return baseDAO.sum(hql.toString(), param);
+		}
 		if (n == 0)
 		{
 			param.add(year);
@@ -157,6 +155,27 @@ public class OrderServiceImpl implements OrderService {
 			hql.append(" and year(createTime)= ? ");
 		}
 		return baseDAO.sum(hql.toString().replaceFirst("and", "where"), param);
+	}
+	
+	@Override
+	public Double getTotalProfit(int n)
+	{
+		StringBuffer hql = new StringBuffer("select sum(p.price*oi.num-p.costprice*oi.num) from Order o ,OrderItem oi ,Product p where o.id = oi.order.id and p.id = oi.product.id ");
+		Calendar cal = Calendar.getInstance();
+		int year = cal.get(Calendar.YEAR);
+		List<Object> param = new LinkedList<Object>();
+		if(n == 1 ){
+			return baseDAO.sum(hql.toString(), param);
+		}
+		if(n == 0){
+			param.add(year);
+			hql.append(" and year(o.createTime)= ? ");
+		}else if(n == -1){
+			year -= 1;
+			param.add(year);
+			hql.append(" and year(o.createTime)= ? ");
+		}
+		return baseDAO.sum(hql.toString(), param);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -173,7 +192,7 @@ public class OrderServiceImpl implements OrderService {
 		if (n == 1)
 		{
 			// 当天每小时
-			hql = "select new com.zzj.zhijian.entity.DataCount(hour(createTime) as time, count(1) as count)  from Order where year(createTime)="
+			hql = "select new com.zzj.zhijian.bean.DataCount(hour(createTime) as time, count(1) as count)  from Order where year(createTime)="
 					+ year
 					+ " and month(createTime)="
 					+ (month + 1)
@@ -211,13 +230,13 @@ public class OrderServiceImpl implements OrderService {
 		} else if (n == 2)
 		{
 			// 每星期
-			hql = "select new com.zzj.zhijian.entity.DataCount(hour(createTime) as time, count(1) as count)  from Order where year(createTime)="
+			hql = "select new com.zzj.zhijian.bean.DataCount(hour(createTime) as time, count(1) as count)  from Order where year(createTime)="
 					+ year + " group by hour(createTime)";
 
 		} else if (n == 3)
 		{
 			// 当月每天
-			hql = "select new com.zzj.zhijian.entity.DataCount(day(createTime) as time, count(1) as count)  from Order where year(createTime)="
+			hql = "select new com.zzj.zhijian.bean.DataCount(day(createTime) as time, count(1) as count)  from Order where year(createTime)="
 					+ year
 					+ " and month(createTime)="
 					+ (month + 1)
@@ -252,7 +271,7 @@ public class OrderServiceImpl implements OrderService {
 		} else if (n == 4)
 		{
 			// 当年每月
-			hql = "select new com.zzj.zhijian.entity.DataCount(month(createTime) as time, count(1) as count)  from Order where year(createTime)="
+			hql = "select new com.zzj.zhijian.bean.DataCount(month(createTime) as time, count(1) as count)  from Order where year(createTime)="
 					+ year + " group by month(createTime)";
 			dataCount = new ArrayList<DataCount>(12);
 			for (int i = 1; i < 13; i++)
@@ -283,6 +302,26 @@ public class OrderServiceImpl implements OrderService {
 			}
 		}
 		return dataCount;
+	}
+
+	@Override
+	public void balanceOrder(Order order,int id)
+	{
+		String hql = "update Order o set o.status=1 where o.id="+id;
+		List<Object> param = new LinkedList<Object>();
+		baseDAO.executeHql(hql, param);
+		// 更新订单中的商品库存减去已购买的数量
+		List<OrderItem> list = order.getOrderItemList();
+		for (OrderItem op : list)
+		{
+			List<Object> param2 = new LinkedList<Object>();
+			int id1 = op.getProduct().getId();
+			int num = op.getNum();
+			param2.add(num);
+			param2.add(id1);
+			String hql2 = "update Product p set p.stock = p.stock-? where p.id = ?";
+			baseDAO.executeHql(hql2, param2);
+		}
 	}
 
 }

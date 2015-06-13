@@ -6,6 +6,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>Insert title here</title>
 <link type="text/css" rel="stylesheet" href="css/style.css" />
+<link type="text/css" rel="stylesheet" href="css/buttons.css" />
 <script type="text/javascript"
 	src="${pageContext.request.contextPath}/js/jquery-1.11.1.js"></script>
 <script type="text/javascript">
@@ -38,8 +39,8 @@
 
 </head>
 <body>
-	<div id="register" class="wrap">
-		<div class="shadow">
+	<div id="register" class="format">
+		<div class="shado">
 			<em class="corner lb"></em> <em class="corner rt"></em>
 			<div class="box">
 				<h1>欢迎回到至简网</h1>
@@ -63,20 +64,20 @@
 								value="${imageCode }" name="imageCode" id="imageCode"><img
 								onclick="javascript:loadimage();" title="换一张试试" name="randImage"
 								id="randImage" src="image.jsp" width="60" height="25" border="1"
-								align="absmiddle" style="cursor: pointer;"><label onclick="javascript:loadimage();" style="cursor: pointer;" >换一张试试</label></td>
+								align="absmiddle" style="cursor: pointer;"><label onclick="javascript:loadimage();" style="cursor: pointer;" title="换一张试试">换一张试试</label></td>
 						</tr>
 
 						<tr>
 							<td></td>
-							<td><label class="ui-red"><input type="submit"
-									name="submit" value="立即登录" /> </label>&nbsp;&nbsp;<a href="register.jsp">没有账户？欢迎注册</a></td>
+							<td><input type="submit"
+									name="submit" value="立即登录" class="ebutton red" /> &nbsp;&nbsp;<a href="register.jsp">没有账户？欢迎注册</a></td>
 						</tr>
 					</table>
 				</form>
 			</div>
 		</div>
 	</div>
-	<div id="footer">
+	<div id="footer" style="margin-top:100px;">
 		<jsp:include page="common/footer.jsp" />
 	</div>
 </body>

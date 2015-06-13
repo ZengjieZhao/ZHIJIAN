@@ -1,8 +1,10 @@
 package com.zzj.zhijian.action;
 
+import java.io.PrintWriter;
 import java.util.List;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
 
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
@@ -12,8 +14,8 @@ import org.apache.struts2.ServletActionContext;
 import org.springframework.stereotype.Controller;
 
 import com.opensymphony.xwork2.ActionSupport;
-import com.zzj.zhijian.entity.PageBean;
-import com.zzj.zhijian.entity.ProductBigType;
+import com.zzj.zhijian.bean.PageBean;
+import com.zzj.zhijian.bean.ProductBigType;
 import com.zzj.zhijian.service.ProductBigTypeService;
 import com.zzj.zhijian.service.ProductSmallTypeService;
 import com.zzj.zhijian.util.ResponseUtil;
@@ -40,6 +42,23 @@ public class ProductBigTypeAction extends ActionSupport
 	private String ids;
 
 	private ProductBigType productBigType;
+
+	private JSONObject responseJson ; 
+	
+	public JSONObject getResponseJson()
+	{
+		return responseJson;
+	}
+
+	public void setResponseJson(JSONObject responseJson)
+	{
+		this.responseJson = responseJson;
+	}
+
+	public ProductBigTypeAction()
+	{
+		responseJson = new JSONObject();
+	}
 
 	public String getIds()
 	{
@@ -114,11 +133,10 @@ public class ProductBigTypeAction extends ActionSupport
 		JsonConfig jsonConfig = new JsonConfig();
 		jsonConfig.setExcludes(new String[] { "productList", "smallTypeList" });
 		JSONArray rows = JSONArray.fromObject(productBigTypeList, jsonConfig);
-		JSONObject result = new JSONObject();
-		result.put("rows", rows);
-		result.put("total", total);
-		ResponseUtil.write(ServletActionContext.getResponse(), result);
-		return null;
+		responseJson.clear();
+		responseJson.put("rows", rows);
+		responseJson.put("total", total);
+		return "json";
 	}
 
 	/**
@@ -130,10 +148,9 @@ public class ProductBigTypeAction extends ActionSupport
 	public String save() throws Exception
 	{
 		productBigTypeService.saveProductBigType(productBigType);
-		JSONObject result = new JSONObject();
-		result.put("success", true);
-		ResponseUtil.write(ServletActionContext.getResponse(), result);
-		return null;
+		responseJson.clear();
+		responseJson.put("success", true);
+		return "json";
 	}
 
 	/**
@@ -144,14 +161,14 @@ public class ProductBigTypeAction extends ActionSupport
 	 */
 	public String delete() throws Exception
 	{
-		JSONObject result = new JSONObject();
 		String[] idsStr = ids.split(",");
 		for (int i = 0; i < idsStr.length; i++)
 		{
 			if (productSmallTypeService.existSmallTypeWithBigTypeId(Integer
 					.parseInt(idsStr[i])))
 			{
-				result.put("exist", "商品大类包含商品小类");
+				responseJson.clear();
+				responseJson.put("exist", "商品大类包含商品小类");
 			} else
 			{
 				ProductBigType productBigType = productBigTypeService
@@ -159,9 +176,8 @@ public class ProductBigTypeAction extends ActionSupport
 				productBigTypeService.delete(productBigType);
 			}
 		}
-		result.put("success", true);
-		ResponseUtil.write(ServletActionContext.getResponse(), result);
-		return null;
+		responseJson.put("success", true);
+		return "json";
 	}
 
 	/**
@@ -183,7 +199,12 @@ public class ProductBigTypeAction extends ActionSupport
 		jsonConfig.setExcludes(new String[] { "productList", "smallTypeList" });
 		JSONArray rows = JSONArray.fromObject(productBigTypeList, jsonConfig);
 		jsonArray.addAll(rows);
-		ResponseUtil.write(ServletActionContext.getResponse(), jsonArray);
+		HttpServletResponse response = ServletActionContext.getResponse();
+		response.setContentType("text/html;charset=utf-8");
+		PrintWriter out = response.getWriter();
+		out.println(jsonArray.toString());
+		out.flush();
+		out.close();
 		return null;
 	}
 

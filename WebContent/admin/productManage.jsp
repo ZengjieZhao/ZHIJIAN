@@ -10,6 +10,7 @@
 <script type="text/javascript" src="${pageContext.request.contextPath}/jquery-easyui-1.3.3/jquery.min.js"></script>
 <script type="text/javascript" src="${pageContext.request.contextPath}/jquery-easyui-1.3.3/jquery.easyui.min.js"></script>
 <script type="text/javascript" src="${pageContext.request.contextPath}/jquery-easyui-1.3.3/locale/easyui-lang-zh_CN.js"></script>
+<script src="${pageContext.request.contextPath}/js/ckeditor/ckeditor.js"></script>
 <script type="text/javascript">
 if('${currentAdmin.name}' ==''){
 	alert('管理员未登录！请登录后操作');
@@ -83,13 +84,14 @@ if('${currentAdmin.name}' ==''){
 		$("#dlg").dialog("open").dialog("setTitle","编辑商品信息");
 		$("#name").val(row.name);
 		$("#price").val(row.price);
+		$("#costprice").val(row.costprice);
 		$("#stock").val(row.stock);
 		$("#proPic").val(row.proPic);
 		$("#hot").val(row.hot);
 		$("#hotTime").val(row.hotTime);
 		$("#specialPrice").val(row.specialPrice);
 		$("#specialPriceTime").val(row.specialPriceTime);
-		$("#description").val(row.description);
+		CKEDITOR.instances.description.setData(row.description);
 		$("#bName").combobox("setValue",row.bigType.id);
 		$("#sName").combobox("setValue",row.smallType.id);
 		url="product_save.action?product.id="+row.id;
@@ -129,12 +131,13 @@ if('${currentAdmin.name}' ==''){
 	function resetValue(){
 		$("#name").val("");
 		$("#price").val("");
+		$("#costprice").val("");
 		$("#stock").val("");
 		$("#pP").val("");
 		$("#bName").combobox("setValue","");
 		$("#sName").combobox("setValue","");
 		$("#description").val("");
-		
+		CKEDITOR.instances.description.setData("");
 		$("#id").val("");
 		$("#proPic").val("");
 		$("#hot").val("");
@@ -235,6 +238,7 @@ if('${currentAdmin.name}' ==''){
 	 		<th field="proPic" width="150" align="center" formatter="formatProPic">商品图片</th>
 	 		<th field="name" width="150" align="center">商品名称</th>
 	 		<th field="price" width="50" align="center">价格</th>
+	 		<th field="costprice" width="50" align="center">成本价格</th>
 	 		<th field="stock" width="50" align="center">库存</th>
 	 		<th field="smallType.id" width="100" align="center" formatter="formatSmallTypeId" hidden="true">所属商品小类id</th>
 	 		<th field="smallType.name" width="100" align="center" formatter="formatSmallTypeName">所属商品小类</th>
@@ -264,7 +268,7 @@ if('${currentAdmin.name}' ==''){
 		</div>
 	</div>
 	
-	<div id="dlg" class="easyui-dialog" style="width: 600px;height:450px;padding: 10px 20px"
+	<div id="dlg" class="easyui-dialog" style="width: 800px;height:450px;padding: 10px 20px"
 	  closed="true" buttons="#dlg-buttons">
 	 	<form id="fm" method="post" enctype="multipart/form-data">
 	 		<table cellspacing="8px">
@@ -275,6 +279,10 @@ if('${currentAdmin.name}' ==''){
 	 			<tr>
 	 				<td>价格：</td>
 	 				<td colspan="4"><input type="text" id="price" name="product.price" class="easyui-validatebox" required="true"/></td>
+	 			</tr>
+	 			<tr>
+	 				<td>成本：</td>
+	 				<td colspan="4"><input type="text" id="costprice" name="product.costprice" class="easyui-validatebox" required="true"/></td>
 	 			</tr>
 	 			<tr>
 	 				<td>库存：</td>
@@ -299,7 +307,7 @@ if('${currentAdmin.name}' ==''){
 	 			<tr>
 	 				<td valign="top">备注：</td>
 	 				<td colspan="4">
-	 					<textarea rows="5" cols="50" id="description" name="product.description"></textarea>
+	 					<textarea rows="5" cols="50" id="description" name="product.description" class="ckeditor"></textarea>
 	 					<input type="hidden" id="proPic" name="product.proPic"/>
 	 					<input type="hidden" id="hot" name="product.hot"/>
 	 					<input type="hidden" id="hotTime" name="product.hotTime"/>

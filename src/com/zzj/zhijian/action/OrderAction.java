@@ -27,19 +27,19 @@ import org.apache.struts2.interceptor.ServletRequestAware;
 import org.springframework.stereotype.Controller;
 
 import com.opensymphony.xwork2.ActionSupport;
-import com.zzj.zhijian.entity.Order;
-import com.zzj.zhijian.entity.OrderItem;
-import com.zzj.zhijian.entity.PageBean;
-import com.zzj.zhijian.entity.Product;
-import com.zzj.zhijian.entity.ShoppingCart;
-import com.zzj.zhijian.entity.ShoppingCartItem;
-import com.zzj.zhijian.entity.User;
+import com.zzj.zhijian.bean.Order;
+import com.zzj.zhijian.bean.OrderItem;
+import com.zzj.zhijian.bean.PageBean;
+import com.zzj.zhijian.bean.Product;
+import com.zzj.zhijian.bean.ShoppingCart;
+import com.zzj.zhijian.bean.ShoppingCartItem;
+import com.zzj.zhijian.bean.User;
 import com.zzj.zhijian.service.OrderService;
 import com.zzj.zhijian.service.ProductService;
+import com.zzj.zhijian.service.UserService;
 import com.zzj.zhijian.util.ByteUtil;
 import com.zzj.zhijian.util.DateUtil;
 import com.zzj.zhijian.util.ExportTableUtil;
-import com.zzj.zhijian.util.NavUtil;
 import com.zzj.zhijian.util.ResponseUtil;
 import com.zzj.zhijian.util.StringUtil;
 
@@ -59,7 +59,8 @@ public class OrderAction extends ActionSupport implements ServletRequestAware {
 	private static final long serialVersionUID = 1L;
 
 	private HttpServletRequest request;
-
+	@Resource
+	private UserService userService;
 	@Resource
 	private OrderService orderService;
 	@Resource
@@ -76,13 +77,30 @@ public class OrderAction extends ActionSupport implements ServletRequestAware {
 	private String rows;
 
 	private String id;
-
+	private int oid;
 	private String orderNos;
 	private int stockstatus;
-	
+	private float balance;
+
 	// 这个输入流对应上面struts.xml中配置的那个excelStream，两者必须一致
 	private InputStream excelStream;
 	private String fileName; // 文件名
+	private JSONObject responseJson;
+
+	public JSONObject getResponseJson()
+	{
+		return responseJson;
+	}
+
+	public void setResponseJson(JSONObject responseJson)
+	{
+		this.responseJson = responseJson;
+	}
+
+	public OrderAction()
+	{
+		responseJson = new JSONObject();
+	}
 
 	public int getStockstatus()
 	{
@@ -112,6 +130,16 @@ public class OrderAction extends ActionSupport implements ServletRequestAware {
 	public void setId(String id)
 	{
 		this.id = id;
+	}
+
+	public int getOid()
+	{
+		return oid;
+	}
+
+	public void setOid(int oid)
+	{
+		this.oid = oid;
 	}
 
 	public String getPage()
@@ -214,6 +242,16 @@ public class OrderAction extends ActionSupport implements ServletRequestAware {
 		this.fileName = fileName;
 	}
 
+	public float getBalance()
+	{
+		return balance;
+	}
+
+	public void setBalance(float balance)
+	{
+		this.balance = balance;
+	}
+
 	/**
 	 * 保存订单
 	 * 
@@ -224,11 +262,11 @@ public class OrderAction extends ActionSupport implements ServletRequestAware {
 	{
 		HttpSession session = request.getSession();
 		Order order = new Order();
-		User currentUsre = (User) session.getAttribute("currentUser");
-		order.setUser(currentUsre);
+		User currentU = (User) session.getAttribute("currentUser");
+		order.setUser(currentU);
 		order.setCreateTime(new Date());
 		order.setOrderNo(DateUtil.getCurrentDateStr());
-		order.setStatus(1);
+		order.setStatus(0);
 
 		ShoppingCart shoppingCart = (ShoppingCart) session
 				.getAttribute("shoppingCart");
@@ -242,9 +280,12 @@ public class OrderAction extends ActionSupport implements ServletRequestAware {
 		{
 			Product p = productService.getProductById(shoppingCartItem
 					.getProduct().getId());
+			System.out.println("购买数量：" + shoppingCartItem.getCount());
+			System.out.println(p.getStock());
 			if (shoppingCartItem.getCount() > p.getStock())
 			{
 				stockstatus = 0;
+				orderItemList.clear();
 				break;
 			} else
 			{
@@ -258,19 +299,62 @@ public class OrderAction extends ActionSupport implements ServletRequestAware {
 			cost += product.getPrice() * shoppingCartItem.getCount();
 			orderItemList.add(orderItem);
 		}
+
+		navCode = "购物车";
+		mainPage = "shopping/shopping-result.jsp";
 		if (stockstatus == 1)
 		{
+			navCode = "订单";
+			mainPage = "shopping/shoppingOrderPreView.jsp";
+			session.setAttribute("orderItemList", orderItemList);
+			session.setAttribute("cost", cost);
 			order.setOrderItemList(orderItemList);
 			order.setCost(cost);
-			orderService.saveOrder(order);
-			navCode = NavUtil.genNavCode("购物");
-			mainPage = "shopping/shopping-result.jsp";
+			oid = orderService.saveOrder(order);
+			System.out.println(">>>>>>>>>>>>oid:" + oid);
+			session.setAttribute("oid", oid);
+			session.setAttribute("order", order);
+			userService.saveUser(currentU);
 			session.removeAttribute("shoppingCart");
+		}
+		session.setAttribute("stockstatus", stockstatus);
+		return SUCCESS;
+	}
+
+	/**
+	 * 结算
+	 * 
+	 * @return
+	 * @throws Exception
+	 */
+
+	public String balance() throws Exception
+	{
+		System.out.println("结算");
+		HttpSession session = request.getSession();
+		int tid = (Integer) session.getAttribute("oid");
+		User currentU = (User) session.getAttribute("currentUser");
+		Order order = (Order) session.getAttribute("order");
+		float cost = (Float) session.getAttribute("cost");
+
+		float b = currentU.getBalance();
+		navCode = "订单";
+		mainPage = "shopping/shopping-result.jsp";
+		stockstatus = 1;
+		// 校验余额
+		if (b < cost)
+		{
+
+			balance = 0;
+			return SUCCESS;
 		} else
 		{
-			navCode = NavUtil.genNavCode("购物");
-			mainPage = "shopping/shopping-result.jsp";
+			balance = 1;
 		}
+		orderService.balanceOrder(order, tid);
+		currentU.setBalance(b - cost);
+		userService.saveUser(currentU);
+		session.removeAttribute("orderItemList");
 		return SUCCESS;
 	}
 
@@ -290,9 +374,45 @@ public class OrderAction extends ActionSupport implements ServletRequestAware {
 		}
 		s_order.setUser(currentUser);
 		orderList = orderService.findOrder(s_order, null);
-		navCode = NavUtil.genNavCode("个人中心");
+		navCode = "个人中心";
 		mainPage = "userCenter/orderList.jsp";
 		return "orderList";
+	}
+
+	/**
+	 * 取消订单
+	 * 
+	 * @return
+	 * @throws Exception
+	 */
+	public String cancelOrder() throws Exception
+	{
+
+		orderService.updateOrderStatus(status, orderNo);
+		responseJson.clear();
+		responseJson.put("success", true);
+		return "json";
+	}
+
+	/**
+	 * 去结算
+	 * 
+	 * @return
+	 * @throws Exception
+	 */
+	public String gotoBalance() throws Exception
+	{
+		HttpSession session = request.getSession();
+		navCode = "订单";
+		mainPage = "shopping/shoppingOrderPreView.jsp";
+		List<OrderItem> orderItemList = new LinkedList<OrderItem>();
+		Order order = orderService.getOrderByOrderNo(orderNo);
+		orderItemList = order.getOrderItemList();
+		session.setAttribute("order", order);
+		session.setAttribute("orderItemList", orderItemList);
+		session.setAttribute("oid", order.getId());
+		session.setAttribute("cost", order.getCost());
+		return "success";
 	}
 
 	/**
@@ -304,10 +424,17 @@ public class OrderAction extends ActionSupport implements ServletRequestAware {
 	public String confirmReceive() throws Exception
 	{
 		orderService.updateOrderStatus(status, orderNo);
-		JSONObject result = new JSONObject();
-		result.put("success", true);
-		ResponseUtil.write(ServletActionContext.getResponse(), result);
-		return null;
+		responseJson.clear();
+		responseJson.put("success", true);
+		return "json";
+	}
+
+	public String backOrder() throws Exception
+	{
+		orderService.updateOrderStatus(status, orderNo);
+		responseJson.clear();
+		responseJson.put("success", true);
+		return "json";
 	}
 
 	/**
@@ -330,11 +457,10 @@ public class OrderAction extends ActionSupport implements ServletRequestAware {
 				new ObjectJsonValueProcessor(new String[] { "id", "userName" },
 						User.class));
 		JSONArray rows = JSONArray.fromObject(orderList, jsonConfig);
-		JSONObject result = new JSONObject();
-		result.put("rows", rows);
-		result.put("total", total);
-		ResponseUtil.write(ServletActionContext.getResponse(), result);
-		return null;
+		responseJson.clear();
+		responseJson.put("rows", rows);
+		responseJson.put("total", total);
+		return "json";
 	}
 
 	/**
@@ -351,7 +477,6 @@ public class OrderAction extends ActionSupport implements ServletRequestAware {
 		}
 		Order order = orderService.getOrderById(Integer.parseInt(id));
 		List<OrderItem> orderItemList = order.getOrderItemList();
-		JSONObject result = new JSONObject();
 		JSONArray rows = new JSONArray();
 		for (OrderItem orderItem : orderItemList)
 		{
@@ -364,13 +489,14 @@ public class OrderAction extends ActionSupport implements ServletRequestAware {
 			jsonObject.put("subtotal", product.getPrice() * orderItem.getNum());
 			rows.add(jsonObject);
 		}
-		result.put("rows", rows);
-		result.put("total", rows.size());
-		ResponseUtil.write(ServletActionContext.getResponse(), result);
-		return null;
+		responseJson.clear();
+		responseJson.put("rows", rows);
+		responseJson.put("total", rows.size());
+		return "json";
 	}
-	
-	public String printView()throws Exception{
+
+	public String printView() throws Exception
+	{
 		if (StringUtil.isEmpty(id))
 		{
 			return null;
@@ -394,10 +520,9 @@ public class OrderAction extends ActionSupport implements ServletRequestAware {
 		{
 			orderService.updateOrderStatus(status, orderNoStr[i]);
 		}
-		JSONObject result = new JSONObject();
-		result.put("success", true);
-		ResponseUtil.write(ServletActionContext.getResponse(), result);
-		return null;
+		responseJson.clear();
+		responseJson.put("success", true);
+		return "json";
 	}
 
 	public String doExportOrder() throws Exception
@@ -405,10 +530,9 @@ public class OrderAction extends ActionSupport implements ServletRequestAware {
 		List<Order> orderList = orderService.findOrder(s_order);
 		if (orderList == null)
 		{
-			JSONObject result = new JSONObject();
-			result.put("success", false);
-			ResponseUtil.write(ServletActionContext.getResponse(), result);
-			return null;
+			responseJson.clear();
+			responseJson.put("success", false);
+			return "json";
 		} else
 		{
 			HSSFWorkbook workbook = this.getWorkbook(orderList);
@@ -421,10 +545,9 @@ public class OrderAction extends ActionSupport implements ServletRequestAware {
 				return "export_success";
 			} else
 			{
-				JSONObject result = new JSONObject();
-				result.put("success", false);
-				ResponseUtil.write(ServletActionContext.getResponse(), result);
-				return null;
+				responseJson.clear();
+				responseJson.put("success", false);
+				return "json";
 			}
 		}
 	}
@@ -450,7 +573,7 @@ public class OrderAction extends ActionSupport implements ServletRequestAware {
 		row = sheet.createRow(1);
 		for (int i = 0; i < ExportTableUtil.ORDER_COLUMNS_LENGTH; i++)
 		{
-			sheet.setColumnWidth(i, 22*256);
+			sheet.setColumnWidth(i, 22 * 256);
 			cell = row.createCell(i);
 			cell.setCellValue(ExportTableUtil.ORDER_COLUMNS[i]);
 			cell.setCellStyle(style);

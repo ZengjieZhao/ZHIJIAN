@@ -18,15 +18,13 @@ import org.apache.struts2.interceptor.ServletRequestAware;
 import org.springframework.stereotype.Controller;
 
 import com.opensymphony.xwork2.ActionSupport;
-import com.zzj.zhijian.entity.PageBean;
-import com.zzj.zhijian.entity.Product;
-import com.zzj.zhijian.entity.ProductBigType;
-import com.zzj.zhijian.entity.ProductSmallType;
+import com.zzj.zhijian.bean.PageBean;
+import com.zzj.zhijian.bean.Product;
+import com.zzj.zhijian.bean.ProductBigType;
+import com.zzj.zhijian.bean.ProductSmallType;
 import com.zzj.zhijian.service.ProductService;
 import com.zzj.zhijian.util.DateUtil;
-import com.zzj.zhijian.util.NavUtil;
 import com.zzj.zhijian.util.PageUtil;
-import com.zzj.zhijian.util.ResponseUtil;
 import com.zzj.zhijian.util.StringUtil;
 
 /**
@@ -64,6 +62,24 @@ public class ProductAction extends ActionSupport implements ServletRequestAware
 	private Product product;
 
 	private String ids;
+
+	
+	private JSONObject responseJson ; 
+	
+	public JSONObject getResponseJson()
+	{
+		return responseJson;
+	}
+
+	public void setResponseJson(JSONObject responseJson)
+	{
+		this.responseJson = responseJson;
+	}
+
+	public ProductAction()
+	{
+		responseJson = new JSONObject();
+	}
 
 	public List<Product> getLookList()
 	{
@@ -239,7 +255,7 @@ public class ProductAction extends ActionSupport implements ServletRequestAware
 		pageCode = PageUtil.genPagination(request.getContextPath()
 				+ "/product.action", total, Integer.parseInt(page), 8,
 				param.toString());
-		navCode = NavUtil.genNavCode("商品列表");
+		navCode = "商品列表";
 		mainPage = "product/productList.jsp";
 		return super.execute();
 	}
@@ -254,7 +270,7 @@ public class ProductAction extends ActionSupport implements ServletRequestAware
 	{
 		product = productService.getProductById(productId);
 		saveCurrentBrowse(product);
-		navCode = NavUtil.genNavCode("商品详情");
+		navCode = "商品详情";
 		mainPage = "product/productDetails.jsp";
 		return SUCCESS;
 	}
@@ -324,11 +340,10 @@ public class ProductAction extends ActionSupport implements ServletRequestAware
 				new ObjectJsonValueProcessor(new String[] { "id", "name" },
 						ProductSmallType.class));
 		JSONArray rows = JSONArray.fromObject(productList, jsonConfig);
-		JSONObject result = new JSONObject();
-		result.put("rows", rows);
-		result.put("total", total);
-		ResponseUtil.write(ServletActionContext.getResponse(), result);
-		return null;
+		responseJson.clear();
+		responseJson.put("rows", rows);
+		responseJson.put("total", total);
+		return "json";
 	}
 
 	/**
@@ -357,10 +372,9 @@ public class ProductAction extends ActionSupport implements ServletRequestAware
 			product.setProPic("");
 		}
 		productService.saveProduct(product);
-		JSONObject result = new JSONObject();
-		result.put("success", true);
-		ResponseUtil.write(ServletActionContext.getResponse(), result);
-		return null;
+		responseJson.clear();
+		responseJson.put("success", true);
+		return "json";
 	}
 
 	/**
@@ -371,7 +385,6 @@ public class ProductAction extends ActionSupport implements ServletRequestAware
 	 */
 	public String delete() throws Exception
 	{
-		JSONObject result = new JSONObject();
 		String[] idsStr = ids.split(",");
 		for (int i = 0; i < idsStr.length; i++)
 		{
@@ -379,9 +392,9 @@ public class ProductAction extends ActionSupport implements ServletRequestAware
 					.parseInt(idsStr[i]));
 			productService.deleteProduct(product);
 		}
-		result.put("success", true);
-		ResponseUtil.write(ServletActionContext.getResponse(), result);
-		return null;
+		responseJson.clear();
+		responseJson.put("success", true);
+		return "json";
 	}
 
 	/**
@@ -392,15 +405,14 @@ public class ProductAction extends ActionSupport implements ServletRequestAware
 	 */
 	public String setProductWithHot() throws Exception
 	{
-		JSONObject result = new JSONObject();
 		String[] idsStr = ids.split(",");
 		for (int i = 0; i < idsStr.length; i++)
 		{
 			productService.setProductWithHot(Integer.parseInt(idsStr[i]));
 		}
-		result.put("success", true);
-		ResponseUtil.write(ServletActionContext.getResponse(), result);
-		return null;
+		responseJson.clear();
+		responseJson.put("success", true);
+		return "json";
 	}
 
 	/**
@@ -411,16 +423,15 @@ public class ProductAction extends ActionSupport implements ServletRequestAware
 	 */
 	public String setProductWithSpecialPrice() throws Exception
 	{
-		JSONObject result = new JSONObject();
 		String[] idsStr = ids.split(",");
 		for (int i = 0; i < idsStr.length; i++)
 		{
 			productService.setProductWithSpecialPrice(Integer
 					.parseInt(idsStr[i]));
 		}
-		result.put("success", true);
-		ResponseUtil.write(ServletActionContext.getResponse(), result);
-		return null;
+		responseJson.clear();
+		responseJson.put("success", true);
+		return "json";
 	}
 
 	@Override

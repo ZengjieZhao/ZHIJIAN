@@ -13,10 +13,9 @@ import org.apache.struts2.ServletActionContext;
 import org.springframework.stereotype.Controller;
 
 import com.opensymphony.xwork2.ActionSupport;
-import com.zzj.zhijian.entity.Notice;
-import com.zzj.zhijian.entity.PageBean;
+import com.zzj.zhijian.bean.Notice;
+import com.zzj.zhijian.bean.PageBean;
 import com.zzj.zhijian.service.NoticeService;
-import com.zzj.zhijian.util.NavUtil;
 import com.zzj.zhijian.util.ResponseUtil;
 
 /**
@@ -46,6 +45,23 @@ public class NoticeAction extends ActionSupport
 	private String rows;
 	private Notice s_notice;
 	private String ids;
+	private JSONObject responseJson ; 
+	
+	
+	public JSONObject getResponseJson()
+	{
+		return responseJson;
+	}
+
+	public void setResponseJson(JSONObject responseJson)
+	{
+		this.responseJson = responseJson;
+	}
+
+	public NoticeAction()
+	{
+		responseJson = new JSONObject();
+	}
 
 	public String getPage()
 	{
@@ -137,7 +153,7 @@ public class NoticeAction extends ActionSupport
 	{
 		notice = noticeService.getNoticeById(noticeId);
 		mainPage = "notice/noticeDetails.jsp";
-		navCode = NavUtil.genNavCode("公告信息");
+		navCode ="公告信息";
 		return SUCCESS;
 	}
 
@@ -158,11 +174,10 @@ public class NoticeAction extends ActionSupport
 		jsonConfig.registerJsonValueProcessor(java.util.Date.class,
 				new DateJsonValueProcessor("yyyy-MM-dd"));
 		JSONArray rows = JSONArray.fromObject(noticeList, jsonConfig);
-		JSONObject result = new JSONObject();
-		result.put("rows", rows);
-		result.put("total", total);
-		ResponseUtil.write(ServletActionContext.getResponse(), result);
-		return null;
+		responseJson.clear();
+		responseJson.put("rows", rows);
+		responseJson.put("total", total);
+		return "json";
 	}
 
 	/**
@@ -178,10 +193,9 @@ public class NoticeAction extends ActionSupport
 			notice.setCreateTime(new Date());
 		}
 		noticeService.saveNotice(notice);
-		JSONObject result = new JSONObject();
-		result.put("success", true);
-		ResponseUtil.write(ServletActionContext.getResponse(), result);
-		return null;
+		responseJson.clear();
+		responseJson.put("success", true);
+		return "json";
 	}
 
 	/**
@@ -192,7 +206,6 @@ public class NoticeAction extends ActionSupport
 	 */
 	public String delete() throws Exception
 	{
-		JSONObject result = new JSONObject();
 		String[] idsStr = ids.split(",");
 		for (int i = 0; i < idsStr.length; i++)
 		{
@@ -200,9 +213,9 @@ public class NoticeAction extends ActionSupport
 					.parseInt(idsStr[i]));
 			noticeService.delete(notice);
 		}
-		result.put("success", true);
-		ResponseUtil.write(ServletActionContext.getResponse(), result);
-		return null;
+		responseJson.clear();
+		responseJson.put("success", true);
+		return "json";
 	}
 
 }

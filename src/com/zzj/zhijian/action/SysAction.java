@@ -12,12 +12,12 @@ import org.apache.struts2.interceptor.ApplicationAware;
 import org.springframework.stereotype.Controller;
 
 import com.opensymphony.xwork2.ActionSupport;
-import com.zzj.zhijian.entity.News;
-import com.zzj.zhijian.entity.Notice;
-import com.zzj.zhijian.entity.PageBean;
-import com.zzj.zhijian.entity.Product;
-import com.zzj.zhijian.entity.ProductBigType;
-import com.zzj.zhijian.entity.Tag;
+import com.zzj.zhijian.bean.News;
+import com.zzj.zhijian.bean.Notice;
+import com.zzj.zhijian.bean.PageBean;
+import com.zzj.zhijian.bean.Product;
+import com.zzj.zhijian.bean.ProductBigType;
+import com.zzj.zhijian.bean.Tag;
 import com.zzj.zhijian.service.NewsService;
 import com.zzj.zhijian.service.NoticeService;
 import com.zzj.zhijian.service.ProductBigTypeService;
@@ -57,12 +57,35 @@ public class SysAction extends ActionSupport implements ApplicationAware
 	@Resource
 	private ProductService productService;
 
+	private JSONObject responseJson ;  
+	
+	
+	
+	public SysAction()
+	{
+		responseJson = new JSONObject();
+	}
+
+
 	@Override
 	public void setApplication(Map<String, Object> application)
 	{
 		// TODO Auto-generated method stub
 		this.application = application;
 	}
+	
+	
+	public JSONObject getResponseJson()
+	{
+		return responseJson;
+	}
+
+
+	public void setResponseJson(JSONObject responseJson)
+	{
+		this.responseJson = responseJson;
+	}
+
 
 	/**
 	 * Ë¢ÐÂÏµÍ³
@@ -98,10 +121,9 @@ public class SysAction extends ActionSupport implements ApplicationAware
 		List<Product> hotProductList = productService.findProductList(
 				s_product, new PageBean(1, 6));
 		application.put("hotProductList", hotProductList);
-		JSONObject result = new JSONObject();
-		result.put("success", true);
-		ResponseUtil.write(ServletActionContext.getResponse(), result);
-		return null;
+		responseJson.clear();
+		responseJson.put("success", true);
+		return "json";
 	}
 
 }

@@ -2,8 +2,8 @@ package com.zzj.zhijian.service;
 
 import java.util.List;
 
-import com.zzj.zhijian.entity.PageBean;
-import com.zzj.zhijian.entity.ProductSmallType;
+import com.zzj.zhijian.bean.PageBean;
+import com.zzj.zhijian.bean.ProductSmallType;
 
 /**
  * 商品小类service接口

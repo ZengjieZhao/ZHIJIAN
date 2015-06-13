@@ -7,23 +7,35 @@
 	<constant name="struts.i18n.encoding" value="UTF-8" />
 	<!-- 指定Web应用的默认编码集，相当于调用 HttpServletRequest的setCharacterEncoding方法。 -->
 	<constant name="struts.action.extension" value="action" />
-	<!-- 该属性指定需要Struts 2处理的请求后缀，该属性的默认值是action，即所有匹配*.action的请求都由Struts 2处理。-->
+	<!-- 该属性指定需要Struts 2处理的请求后缀，该属性的默认值是action，即所有匹配*.action的请求都由Struts 2处理。 -->
 	<!-- 如果用户需要指定多个请求后缀，则多个后缀之间以英文逗号（，）隔开 -->
 
 	<package name="zhijian" namespace="/" extends="struts-default">
+		<result-types>
+			<result-type name="json" class="org.apache.struts2.json.JSONResult" />
+		</result-types>
 		<action name="product_*" class="com.zzj.zhijian.action.ProductAction"
 			method="{1}">
 			<result name="success">productMain.jsp</result>
+			<result name="json" type="json">
+				<param name="root">responseJson</param>
+			</result>
 		</action>
 
 		<action name="news_*" class="com.zzj.zhijian.action.NewsAction"
 			method="{1}">
 			<result name="success">newsMain.jsp</result>
+			<result name="json" type="json">
+				<param name="root">responseJson</param>
+			</result>
 		</action>
 
 		<action name="notice_*" class="com.zzj.zhijian.action.NoticeAction"
 			method="{1}">
 			<result name="success">noticeMain.jsp</result>
+			<result name="json" type="json">
+				<param name="root">responseJson</param>
+			</result>
 		</action>
 
 		<action name="user_*" class="com.zzj.zhijian.action.UserAction"
@@ -36,14 +48,18 @@
 			<result name="userCenter">userCenter.jsp</result>
 			<result name="adminError">admin/login.jsp</result>
 			<result name="adminLogin" type="redirect">admin/main.jsp</result>
+			<result name="existUserWithUserName"></result>
+			<result name="json" type="json">
+				<param name="root">responseJson</param>
+			</result>
 			<result name="export_success" type="stream">
-			 <!-- 文件类型 -->  
-        	<param name="contentType"> application/vnd.ms-excel</param>  
-        	<!-- excelStream 与对应action中的输入流的名字要一致 -->  
-        	<param name= "inputName">excelStream</param>   
-       		<!-- 文件名 与action中fileName一致 -->  
-        	<param name="contentDisposition">attachment;filename=" ${fileName}.xls"</param>   
-        	<param name="bufferSize">1024</param>  
+				<!-- 文件类型 -->
+				<param name="contentType"> application/vnd.ms-excel</param>
+				<!-- excelStream 与对应action中的输入流的名字要一致 -->
+				<param name="inputName">excelStream</param>
+				<!-- 文件名 与action中fileName一致 -->
+				<param name="contentDisposition">attachment;filename=" ${fileName}.xls"</param>
+				<param name="bufferSize">1024</param>
 			</result>
 		</action>
 
@@ -51,12 +67,18 @@
 			method="{1}">
 			<result name="success">comment.jsp</result>
 			<result name="save" type="redirectAction">comment_list.action</result>
+			<result name="json" type="json">
+				<param name="root">responseJson</param>
+			</result>
 		</action>
 
 		<action name="shopping_*" class="com.zzj.zhijian.action.ShoppingAction"
 			method="{1}">
 			<result name="success">shoppingMain.jsp</result>
 			<result name="list" type="redirectAction">shopping_list</result>
+			<result name="json" type="json">
+				<param name="root">responseJson</param>
+			</result>
 		</action>
 
 		<action name="order_*" class="com.zzj.zhijian.action.OrderAction"
@@ -64,32 +86,52 @@
 			<result name="success">shoppingMain.jsp</result>
 			<result name="orderList">userCenter.jsp</result>
 			<result name="printview">invoice.jsp</result>
+			
+			<result name="json" type="json">
+				<param name="root">responseJson</param>
+			</result>
 			<result name="export_success" type="stream">
-			 <!-- 文件类型 -->  
-        	<param name="contentType"> application/vnd.ms-excel</param>  
-        	<!-- excelStream 与对应action中的输入流的名字要一致 -->  
-        	<param name= "inputName">excelStream</param>   
-       		<!-- 文件名 与action中fileName一致 -->  
-        	<param name="contentDisposition">attachment;filename=" ${fileName}.xls"</param>   
-        	<param name="bufferSize">1024</param>  
+				<!-- 文件类型 -->
+				<param name="contentType"> application/vnd.ms-excel</param>
+				<!-- excelStream 与对应action中的输入流的名字要一致 -->
+				<param name="inputName">excelStream</param>
+				<!-- 文件名 与action中fileName一致 -->
+				<param name="contentDisposition">attachment;filename=" ${fileName}.xls"</param>
+				<param name="bufferSize">1024</param>
 			</result>
 		</action>
 
 		<action name="productBigType_*" class="com.zzj.zhijian.action.ProductBigTypeAction"
 			method="{1}">
+			<result name="json" type="json">
+				<param name="root">responseJson</param>
+			</result>
 		</action>
 
 		<action name="productSmallType_*" class="com.zzj.zhijian.action.ProductSmallTypeAction"
 			method="{1}">
+			<result name="json" type="json">
+				<param name="root">responseJson</param>
+			</result>
 		</action>
 
 		<action name="tag_*" class="com.zzj.zhijian.action.TagAction"
 			method="{1}">
+			<result name="json" type="json">
+				<param name="root">responseJson</param>
+			</result>
 		</action>
-		<action name="statistic_*" class="com.zzj.zhijian.action.StatisticsAction" method="{1}">
+		<action name="statistic_*" class="com.zzj.zhijian.action.StatisticsAction"
+			method="{1}">
+			<result name="json" type="json">
+				<param name="root">responseJson</param>
+			</result>
 		</action>
 		<action name="sys_*" class="com.zzj.zhijian.action.SysAction"
 			method="{1}">
+			<result name="json" type="json">
+				<param name="root">responseJson</param>
+			</result>
 		</action>
 	</package>
 </struts>   

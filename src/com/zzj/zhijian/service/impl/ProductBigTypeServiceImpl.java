@@ -7,9 +7,9 @@ import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
 
+import com.zzj.zhijian.bean.PageBean;
+import com.zzj.zhijian.bean.ProductBigType;
 import com.zzj.zhijian.dao.BaseDAO;
-import com.zzj.zhijian.entity.PageBean;
-import com.zzj.zhijian.entity.ProductBigType;
 import com.zzj.zhijian.service.ProductBigTypeService;
 import com.zzj.zhijian.util.StringUtil;
 

@@ -1,7 +1,5 @@
 package com.zzj.zhijian.action;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.util.Calendar;
 import java.util.Date;
@@ -22,23 +20,20 @@ import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.hssf.util.CellRangeAddress;
 import org.apache.poi.ss.usermodel.CellStyle;
-import org.apache.poi.ss.usermodel.Color;
 import org.apache.poi.ss.usermodel.IndexedColors;
 import org.apache.struts2.ServletActionContext;
 import org.apache.struts2.interceptor.ServletRequestAware;
 import org.springframework.stereotype.Controller;
 
 import com.opensymphony.xwork2.ActionSupport;
-import com.zzj.zhijian.entity.Admin;
-import com.zzj.zhijian.entity.PageBean;
-import com.zzj.zhijian.entity.User;
+import com.zzj.zhijian.bean.Admin;
+import com.zzj.zhijian.bean.PageBean;
+import com.zzj.zhijian.bean.User;
 import com.zzj.zhijian.service.AdminService;
 import com.zzj.zhijian.service.OrderService;
 import com.zzj.zhijian.service.UserService;
 import com.zzj.zhijian.util.ByteUtil;
 import com.zzj.zhijian.util.ExportTableUtil;
-import com.zzj.zhijian.util.NavUtil;
-import com.zzj.zhijian.util.ResponseUtil;
 
 /**
  * 用户Action类
@@ -46,6 +41,7 @@ import com.zzj.zhijian.util.ResponseUtil;
  * @author zhaozengjie
  *
  */
+@SuppressWarnings("deprecation")
 @Controller
 public class UserAction extends ActionSupport implements ServletRequestAware {
 
@@ -89,6 +85,21 @@ public class UserAction extends ActionSupport implements ServletRequestAware {
 	// 这个输入流对应上面struts.xml中配置的那个excelStream，两者必须一致
 	private InputStream excelStream;
 	private String fileName; // 文件名
+	private JSONObject responseJson ;  
+	public UserAction()
+	{
+		responseJson = new JSONObject();
+	}
+
+	public JSONObject getResponseJson()
+	{
+		return responseJson;
+	}
+
+	public void setResponseJson(JSONObject responseJson)
+	{
+		this.responseJson = responseJson;
+	}
 
 	public String getIds()
 	{
@@ -299,16 +310,14 @@ public class UserAction extends ActionSupport implements ServletRequestAware {
 	public String existUserWithUserName() throws Exception
 	{
 		boolean exist = userService.existUserWithUserName(userName);
-		JSONObject result = new JSONObject();
 		if (exist)
 		{
-			result.put("exist", true);
+			responseJson.put("exist", true);
 		} else
 		{
-			result.put("exist", false);
+			responseJson.put("exist", false);
 		}
-		ResponseUtil.write(ServletActionContext.getResponse(), result);
-		return null;
+		return "json";
 	}
 
 	/**
@@ -320,9 +329,6 @@ public class UserAction extends ActionSupport implements ServletRequestAware {
 	public String login() throws Exception
 	{
 		HttpSession session = request.getSession();
-		/*
-		 * if(user.getStatus()!=2) { user.setStatus(2); }
-		 */
 		User currentUser = userService.login(user);
 
 		if (!imageCode.equals(session.getAttribute("sRand")))
@@ -416,7 +422,7 @@ public class UserAction extends ActionSupport implements ServletRequestAware {
 	 */
 	public String userCenter() throws Exception
 	{
-		navCode = NavUtil.genNavCode("个人中心");
+		navCode ="个人中心";
 		mainPage = "userCenter/ucDefault.jsp";
 		return "userCenter";
 	}
@@ -429,7 +435,7 @@ public class UserAction extends ActionSupport implements ServletRequestAware {
 	 */
 	public String getUserInfo() throws Exception
 	{
-		navCode = NavUtil.genNavCode("个人中心");
+		navCode = "个人中心";
 		mainPage = "userCenter/userInfo.jsp";
 		return "userCenter";
 	}
@@ -444,7 +450,7 @@ public class UserAction extends ActionSupport implements ServletRequestAware {
 	{
 		HttpSession session = request.getSession();
 		user = (User) session.getAttribute("currentUser");
-		navCode = NavUtil.genNavCode("个人中心");
+		navCode = "个人中心";
 		mainPage = "userCenter/userSave.jsp";
 		return "userCenter";
 	}
@@ -460,7 +466,7 @@ public class UserAction extends ActionSupport implements ServletRequestAware {
 		HttpSession session = request.getSession();
 		userService.saveUser(user);
 		session.setAttribute("currentUser", user);
-		navCode = NavUtil.genNavCode("个人中心");
+		navCode = "个人中心";
 		mainPage = "userCenter/userInfo.jsp";
 		return "userCenter";
 	}
@@ -482,11 +488,9 @@ public class UserAction extends ActionSupport implements ServletRequestAware {
 		jsonConfig.registerJsonValueProcessor(java.util.Date.class,
 				new DateJsonValueProcessor("yyyy-MM-dd"));
 		JSONArray rows = JSONArray.fromObject(userList, jsonConfig);
-		JSONObject result = new JSONObject();
-		result.put("rows", rows);
-		result.put("total", total);
-		ResponseUtil.write(ServletActionContext.getResponse(), result);
-		return null;
+		responseJson.put("rows", rows);
+		responseJson.put("total", total);
+		return "json";
 	}
 
 	/**
@@ -499,11 +503,9 @@ public class UserAction extends ActionSupport implements ServletRequestAware {
 		List<Admin> adminList = adminService.findAdminList(s_admin, pageBean);
 		long total = adminService.getAdminCount(s_admin);
 		JSONArray rows = JSONArray.fromObject(adminList);
-		JSONObject result = new JSONObject();
-		result.put("rows", rows);
-		result.put("total", total);
-		ResponseUtil.write(ServletActionContext.getResponse(), result);
-		return null;
+		responseJson.put("rows", rows);
+		responseJson.put("total", total);
+		return "json";
 	}
 
 	/**
@@ -514,16 +516,15 @@ public class UserAction extends ActionSupport implements ServletRequestAware {
 	 */
 	public String deleteUser() throws Exception
 	{
-		JSONObject result = new JSONObject();
 		String[] idsStr = ids.split(",");
 		for (int i = 0; i < idsStr.length; i++)
 		{
 			User u = userService.getUserById(Integer.parseInt(idsStr[i]));
 			userService.delete(u);
 		}
-		result.put("success", true);
-		ResponseUtil.write(ServletActionContext.getResponse(), result);
-		return null;
+		responseJson.clear();
+		responseJson.put("success", true);
+		return "json";
 	}
 
 	/**
@@ -534,16 +535,15 @@ public class UserAction extends ActionSupport implements ServletRequestAware {
 	 */
 	public String deleteAdmin() throws Exception
 	{
-		JSONObject result = new JSONObject();
 		String[] idsStr = ids.split(",");
 		for (int i = 0; i < idsStr.length; i++)
 		{
 			Admin a = adminService.getAdminById(Integer.parseInt(idsStr[i]));
 			adminService.delete(a);
 		}
-		result.put("success", true);
-		ResponseUtil.write(ServletActionContext.getResponse(), result);
-		return null;
+		responseJson.clear();
+		responseJson.put("success", true);
+		return "json";
 	}
 
 	/**
@@ -554,25 +554,25 @@ public class UserAction extends ActionSupport implements ServletRequestAware {
 	 */
 	public String saveUser() throws Exception
 	{
-		JSONObject result = new JSONObject();
 		if (user.getId() != 0)
 		{
 			userService.saveUser(user);
-			result.put("success", true);
-			ResponseUtil.write(ServletActionContext.getResponse(), result);
-			return null;
+			responseJson.clear();
+			responseJson.put("success", true);
+			return "json";
 		}
 		if (userService.existUserWithUserName(user.getUserName()))
 		{
-			result.put("success", false);
+			responseJson.clear();
+			responseJson.put("success", false);
 		} else
 		{
 			user.setCreateTime(new Date());
 			userService.saveUser(user);
-			result.put("success", true);
+			responseJson.clear();
+			responseJson.put("success", true);
 		}
-		ResponseUtil.write(ServletActionContext.getResponse(), result);
-		return null;
+		return "json";
 	}
 
 	/**
@@ -583,24 +583,24 @@ public class UserAction extends ActionSupport implements ServletRequestAware {
 	 */
 	public String saveAdmin() throws Exception
 	{
-		JSONObject result = new JSONObject();
 		if (admin.getId() != 0)
 		{
 			adminService.saveAdmin(admin);
-			result.put("success", true);
-			ResponseUtil.write(ServletActionContext.getResponse(), result);
-			return null;
+			responseJson.clear();
+			responseJson.put("success", true);
+			return "saveAdmin";
 		}
 		if (adminService.existAdminWithAdminName(admin.getName()))
 		{
-			result.put("success", false);
+			responseJson.clear();
+			responseJson.put("success", false);
 		} else
 		{
 			adminService.saveAdmin(admin);
-			result.put("success", true);
+			responseJson.clear();
+			responseJson.put("success", true);
 		}
-		ResponseUtil.write(ServletActionContext.getResponse(), result);
-		return null;
+		return "json";
 	}
 
 	/**
@@ -611,13 +611,12 @@ public class UserAction extends ActionSupport implements ServletRequestAware {
 	 */
 	public String modifyPassword() throws Exception
 	{
-		User u = userService.getUserById(user.getId());
-		u.setPassword(user.getPassword());
-		userService.saveUser(u);
-		JSONObject result = new JSONObject();
-		result.put("success", true);
-		ResponseUtil.write(ServletActionContext.getResponse(), result);
-		return null;
+		Admin a = adminService.getAdminById(admin.getId());
+		a.setPassword(admin.getPassword());
+		adminService.saveAdmin(a);
+		responseJson.clear();
+		responseJson.put("success", true);
+		return "json";
 	}
 
 	@Override
@@ -636,10 +635,9 @@ public class UserAction extends ActionSupport implements ServletRequestAware {
 		List<User> userList = userService.findUserList(s_user);
 		if (userList == null)
 		{
-			JSONObject result = new JSONObject();
-			result.put("success", false);
-			ResponseUtil.write(ServletActionContext.getResponse(), result);
-			return null;
+			responseJson.clear();
+			responseJson.put("success", false);
+			return "json";
 		} else
 		{
 			HSSFWorkbook workbook = this.getWorkbook(userList);
@@ -647,28 +645,14 @@ public class UserAction extends ActionSupport implements ServletRequestAware {
 			{
 				Calendar c = Calendar.getInstance();
 				long d = c.getTimeInMillis();
-				/*int year = c.get(Calendar.YEAR);
-				int month = c.get(Calendar.MONTH) + 1;
-				String month_ = new String("" + month);
-				if (month < 10)
-				{
-					month_ = "0" + month;
-				}
-				int day = c.get(Calendar.DAY_OF_MONTH);
-				String day_ = new String("" + day);
-				if (day < 10)
-				{
-					day_ = "0" + day;
-				}*/
 				this.fileName = "user_R"+d;
 				excelStream=ByteUtil.workbook2InputStream(workbook);
 				return "export_success";
 			} else
 			{
-				JSONObject result = new JSONObject();
-				result.put("success", false);
-				ResponseUtil.write(ServletActionContext.getResponse(), result);
-				return null;
+				responseJson.clear();
+				responseJson.put("success", false);
+				return "json";
 			}
 		}
 	}
@@ -679,7 +663,6 @@ public class UserAction extends ActionSupport implements ServletRequestAware {
 	 * @return
 	 * @throws Exception
 	 */
-	@SuppressWarnings("deprecation")
 	private HSSFWorkbook getWorkbook(List<User> list) throws Exception
 	{
 		HSSFWorkbook workbook = new HSSFWorkbook(); // 创建工作表

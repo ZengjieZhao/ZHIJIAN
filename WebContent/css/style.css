@@ -158,10 +158,10 @@ a:hover, a:active {
 
 .sitenav div a.shopping {
 	padding-left: 18px;
-	background: url(../images/bg.png) left -69px no-repeat;
+	background: url(../images/cart.png) no-repeat;
 }
 
-.wrap {
+.format {
 	width: 1200px;
 	margin: 0 auto;
 }
@@ -342,22 +342,6 @@ a:hover, a:active {
 	*display: inline;
 }
 
-.thoughtbot {
-	background-color: #EE432E;
-	background-image: -moz-linear-gradient(center top, #EE432E 0%, #C63929 50%, #B51700 50%,
-		#891100 100%);
-	border: 1px solid #951100;
-	border-radius: 5px;
-	box-shadow: 0px 0px 0px 1px rgba(255, 115, 100, 0.4) inset, 0px 1px 3px
-		#333;
-	color: #FFF;
-	font: bold 14px/1 "helvetica neue", helvetica, arial, sans-serif;
-	padding: 10px 0px 12px;
-	text-align: center;
-	text-shadow: 0px -1px 1px rgba(0, 0, 0, 0.8);
-	width: 100px;
-}
-
 #loginAdmin {
 	clear: both;
 }
@@ -369,13 +353,13 @@ a:hover, a:active {
 
 #loginAdmin .shadow h1 {
 	font-size: 24px;
-	background: #DD292A;
+	background: #A4D3EE;
 	line-height: 54px;
 	color: #4c4d4b;
 	padding-left: 20px;
 	border-bottom: 1px solid #eaeaea;
 	margin-bottom: 1px;
-	color: #fff;
+	color: #000;
 }
 
 #loginAdmin .steps li {
@@ -544,14 +528,17 @@ a:hover, a:active {
 
 #register {
 	clear: both;
+	
 }
 
-#register .shadow {
+#register .shado {
 	width: 599px;
 	margin: 100px auto;
+	border:3px solid #DD292A;
+	border-radius:7px;
 }
 
-#register .shadow h1 {
+#register .shado h1 {
 	font-size: 24px;
 	background: #DD292A;
 	line-height: 54px;
@@ -698,6 +685,7 @@ a:hover, a:active {
 	background: #fafafa;
 	color: #666;
 	border-top: 1px solid #e0e0e0;
+	
 }
 
 #main {
@@ -710,11 +698,11 @@ a:hover, a:active {
 }
 
 #main .lefter .box {
-	border: 1px solid #DD292A;
+	border: 1px solid #B1191A;
 }
 
 #main .lefter h2 {
-	background: #DD292A;
+	background: #B1191A;
 	font-size: 14px;
 	color: #fff;
 	padding: 2px 40px;
@@ -723,7 +711,7 @@ a:hover, a:active {
 #main .lefter .box dl dt {
 	color: #fff;
 	font-weight: bold;
-	background: #DD292A;
+	background: #B1191A;
 	padding: 2px 10px;
 }
 
@@ -787,10 +775,11 @@ a:hover, a:active {
 
 #main .right-main {
 	float: right;
-	width: 715px;
+	width: 990px;
 }
 
 #main .main h1, #main .right-main h1 {
+	text-align:center;
 	padding: 0 10px;
 	font-size: 18px;
 	line-height: 50px;
@@ -833,12 +822,13 @@ a:hover, a:active {
 }
 
 ul.product li {
-	width: 110px;
+	width: 200px;
 	line-height: 18px;
-	height: 160px;
+	height: 240px;
 	float: left;
 	display: inline;
 	margin: 9px;
+	border:1px solid #ddd;
 }
 
 ul.product li dl dt {
@@ -846,8 +836,8 @@ ul.product li dl dt {
 }
 
 ul.product li dl dt img {
-	width: 100px;
-	height: 100px;
+	width: 180px;
+	height: 180px;
 }
 
 ul.product li dl dd.title {
@@ -1085,10 +1075,9 @@ ul.product li dl dd.price {
 	cursor: pointer;
 }
 
-#shopping .button input {
+#shopping .submitOrder input {
 	margin-left: 92%;
 	border: 0;
-	background: url(../images/gotoPay.jpg) no-repeat;
 	width: 100px;
 	height: 35px;
 	cursor: pointer;
@@ -1198,18 +1187,17 @@ ul.product li dl dd.price {
 
 .manage .list {
 	width: 100%;
-	border-top: 2px solid #dfc9b2;
-	border-bottom: 2px solid #dfc9b2;
+	border-top: 2px solid #eee;
+	border-bottom: 2px solid #eee;
 }
 
 .manage .list th {
-	background: #f7f4eb;
 	color: #8a7152;
 }
 
 .manage .list td {
 	padding: 5px;
-	border-top: 1px solid #dfc9b2;
+	border-top: 1px solid #eee;
 }
 
 .manage .list td {

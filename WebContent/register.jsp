@@ -5,6 +5,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <link type="text/css" rel="stylesheet" href="css/style.css" />
+<link type="text/css" rel="stylesheet" href="css/buttons.css" />
 <script type="text/javascript" src="${pageContext.request.contextPath}/js/jquery-1.11.1.js"></script>
 <script src="${pageContext.request.contextPath}/js/My97DatePicker/WdatePicker.js"></script>
 <title>Insert title here</title>
@@ -62,6 +63,9 @@
 				}
 		);
 	}
+	function clearuserError(){
+		$("#userErrorInfo").html("");
+	}
 </script>
 </head>
 <body>
@@ -71,24 +75,17 @@
 </div>
 </div>
 <div style="clear:both;padding-top:10px;">
-<hr width="100%" style="margin-top:20px; color:red;height:10px;background-color: #DD292A;">
 </div>
-<div id="register" class="wrap">
-	<div class="shadow">
-		<em class="corner lb"></em>
-		<em class="corner rt"></em>
+<div id="register" class="format">
+	<div class="shado">
 		<div class="box">
-			<h1>欢迎注册至简网</h1>
-			<ul class="steps clearfix">
-				<li class="current"><em></em>填写注册信息</li>
-				<li class="last"><em></em>注册成功</li>
-			</ul>
+			<h1 style="background-color: #DD292A;height:50px;line-height:50px;color:white;padding-left:20px;">欢迎注册至简商城会员</h1>
 			<form id="regForm" method="post" action="user_register.action" onsubmit="return checkForm()">
 				<table>				
 					
 					<tr>
 						<td class="field">用户名(*)：</td>
-						<td><input class="text" type="text" id="userName" name="user.userName" onblur="checkUserName(this.value)" />&nbsp;<font id="userErrorInfo" color="red"></font></td>
+						<td><input class="text" type="text" id="userName" name="user.userName" onblur="checkUserName(this.value)" onfocus="clearuserError()" />&nbsp;<font id="userErrorInfo" color="red"></font></td>
 					</tr>
 					<tr>
 						<td class="field">登录密码(*)：</td>
@@ -130,11 +127,7 @@
 					</tr>
 					<tr>
 						<td></td>
-						<td><label class="ui-green"><input type="submit" name="submit" value="提交注册" /></label></td>
-					</tr>
-					<tr>
-						<td>&nbsp;</td>
-						<td><font id="error" color="red"></font> </td>
+						<td><input type="submit" name="submit" class="ebutton green" value="提交注册" /><font id="error" color="red"></font></td>
 					</tr>
 				</table>
 			</form>

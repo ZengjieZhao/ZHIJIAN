@@ -11,12 +11,38 @@
 	function confirmReceive(orderNo){
 		if(confirm("确认收货？")){
 			$.post("order_confirmReceive.action",{status:4,orderNo:orderNo},function(result){
-				var result=eval('('+result+')');
 				if(result.success){
 					alert("确认收货成功！");
 					location.reload();
 				}else{
 					alert("确认收获失败！");
+				}
+			});
+		}
+	}
+	function cancelOrder(orderNo){
+		if(confirm("确认取消订单？")){
+			$.post("order_cancelOrder.action",{status:8,orderNo:orderNo},function(result){
+				if(result.success){
+					alert("取消订单进入审核！");
+					location.reload();
+				}else{
+					alert("取消订单失败！");
+				}
+			});
+		}
+	}
+	function gotoBalance(orderNo){
+		window.location.href="order_gotoBalance.action?orderNo="+orderNo;
+	}
+	function backOrder(orderNo){
+		if(confirm("确认退单 ？")){
+			$.post("order_backOrder.action",{status:5,orderNo:orderNo},function(result){
+				if(result.success){
+					alert("退单待审核！");
+					location.reload();
+				}else{
+					alert("退单失败！");
 				}
 			});
 		}
@@ -29,13 +55,13 @@
 			<div class="search">
 				<form action="order_findOrder.action" method="post">
 					订单号：<input type="text" class="text" name="s_order.orderNo" value="${s_order.orderNo}" /> 
-					 <label class="ui-blue"><input type="submit"  name="submit" value="查询" /></label>
+					 <input type="submit" class="ebutton red" style="width:50px;height:25px;line-height: 2px;" name="submit" value="查询" />
 				</form>
 			</div>
 			<div class="spacer"></div>
 				<table class="list">
 				<c:forEach var="order" items="${orderList }">
-				<tr style="background-color: #f7f4eb">
+				<tr style="">
 					<td colspan="4">
 					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 					单号：${order.orderNo }
@@ -44,10 +70,15 @@
 					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 					状态：
 					<c:choose>
+						<c:when test="${order.status==0 }">未付款<button onclick="gotoBalance(${order.orderNo})" class="ebutton red" style="width:120px;height:30px;">去付款</button><button onclick="cancelOrder(${order.orderNo})" class="ebutton orange" style="width:120px;height:30px;">取消订单</button></c:when>
 						<c:when test="${order.status==1 }">待审核</c:when>
 						<c:when test="${order.status==2 }">待发货</c:when>
-						<c:when test="${order.status==3 }"><input type="button" style="border: 1px solid red" value="确实收货" onclick="confirmReceive(${order.orderNo})"/></c:when>
-						<c:when test="${order.status==4 }">交易已完成</c:when>
+						<c:when test="${order.status==3 }"><button onclick="confirmReceive(${order.orderNo})" class="ebutton green" style="width:120px;height:30px;">确认收货</button></c:when>
+						<c:when test="${order.status==4 }">交易已完成<button onclick="backOrder(${order.orderNo})" class="ebutton gray" style="width:120px;height:30px;">申请退单</button></c:when>
+						<c:when test="${order.status==5 }">退单待审核</c:when>
+						<c:when test="${order.status==6 }">退单审核通过</c:when>
+						<c:when test="${order.status==7 }">已退单</c:when>
+						<c:when test="${order.status==8 }">已取消订单</c:when>
 					</c:choose>
 					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 					总金额：${order.cost }&nbsp;(元)

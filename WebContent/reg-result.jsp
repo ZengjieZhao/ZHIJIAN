@@ -11,10 +11,10 @@
 <%@include file="common/sitenav.jsp" %>
 </div>
 <div style="clear: both;"></div>
-<div id="header" class="wrap">
+<div id="header" class="format">
 	<jsp:include page="common/top.jsp"/>
 </div>
-<div id="register" class="wrap">
+<div id="register" class="format">
 	<div class="shadow">
 		<em class="corner lb"></em>
 		<em class="corner rt"></em>

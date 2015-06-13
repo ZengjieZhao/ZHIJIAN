@@ -2,8 +2,8 @@ package com.zzj.zhijian.service;
 
 import java.util.List;
 
-import com.zzj.zhijian.entity.News;
-import com.zzj.zhijian.entity.PageBean;
+import com.zzj.zhijian.bean.News;
+import com.zzj.zhijian.bean.PageBean;
 
 /**
  * 公告Service接口

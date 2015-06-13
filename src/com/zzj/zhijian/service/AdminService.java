@@ -2,8 +2,8 @@ package com.zzj.zhijian.service;
 
 import java.util.List;
 
-import com.zzj.zhijian.entity.Admin;
-import com.zzj.zhijian.entity.PageBean;
+import com.zzj.zhijian.bean.Admin;
+import com.zzj.zhijian.bean.PageBean;
 
 public interface AdminService
 {

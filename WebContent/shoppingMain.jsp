@@ -5,6 +5,8 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<link type="text/css" rel="stylesheet"
+	href="${pageContext.request.contextPath}/css/buttons.css" />
 <title>至简购物</title>
 </head>
 <body>
@@ -12,14 +14,14 @@
 <%@include file="common/sitenav.jsp" %>
 </div>
 <div style="clear: both;"></div>
-<div id="header" class="wrap">
+<div id="header" class="format">
 	<jsp:include page="common/top.jsp"/>
 </div>
-<div id="position" class="wrap">
+<div id="position" class="format">
 		
 </div>
 
-<div class="wrap">
+<div class="format">
 		<jsp:include page="${mainPage }"/>
 </div>
 	

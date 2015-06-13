@@ -10,6 +10,30 @@
 <script>
 $(function(){
 	
+	function setTotal(){
+		var s=0;
+		$(".productTr").each(function(){
+			var n=$(this).find('input[class=text_box]').val();
+			var price=$(this).find('label[class=price_]').html();
+			s+=n*price;
+		});
+		$("#product_total").html(s);
+	}
+	
+	function refreshSession(productId,count){
+		$.post("shopping_updateShoppingCartItem.action",{productId:productId,count:count},
+			function(result){
+				var result=eval('('+result+')');
+				if(result.success){
+					
+				}else{
+					alert("刷新Session失败");
+				}
+			}
+		);
+	}
+	
+	
 	$(".add").click(function(){
 		var t=$(this).parent().find('input[class=text_box]');
 		t.val(parseInt(t.val())+1);
@@ -48,29 +72,6 @@ $(function(){
 		setTotal();
 	});
 	
-	function setTotal(){
-		var s=0;
-		$(".productTr").each(function(){
-			var n=$(this).find('input[class=text_box]').val();
-			var price=$(this).find('label[class=price_]').html();
-			s+=n*price;
-		});
-		$("#product_total").html(s);
-	}
-	
-	function refreshSession(productId,count){
-		$.post("shopping_updateShoppingCartItem.action",{productId:productId,count:count},
-			function(result){
-				var result=eval('('+result+')');
-				if(result.success){
-					
-				}else{
-					alert("刷新Session失败");
-				}
-			}
-		);
-	}
-	
 	setTotal();
 	
 	
@@ -103,8 +104,8 @@ function submit(){
 </head>
 <body>
 	<div id="shopping">
-<!-- 				<form id="fm_shopping" action="order_save.action" method="post" onsubmit="return submit()">
- -->			<table id="myTableProduct">
+
+ 			<table id="myTableProduct">
 				<tr>
 					<th>商品名称</th>
 					<th>商品单价</th>
@@ -113,7 +114,7 @@ function submit(){
 					<th>操作</th>
 				</tr>
 				<c:forEach items="${shoppingCart.shoppingCartItems }" var="shoppingCartItem">
-				<span id="status">${shoppingCart }</span>
+				<span id="status">个人测试：${shoppingCart }</span>
 					<tr class="productTr">
 						<td class="thumb">
 							<img class="imgs" src="${shoppingCartItem.product.proPic }" /><a href="product_showProduct.action?productId=${shoppingCartItem.product.id }" target="_blank">${fn:substring(shoppingCartItem.product.name,0,20)}</a>
@@ -136,10 +137,9 @@ function submit(){
 				</c:forEach>
 			</table>
 
-			<div class="button">
-				<input type="submit" value="" onclick="javascript:submit()"/>
+			<div class="submitOrder">
+				<input type="submit" value="提交订单" onclick="javascript:submit()" class="ebutton red"/>
 			</div>
-		<!-- </form> -->
 </div>
 
 <div class="shopping_list_end">

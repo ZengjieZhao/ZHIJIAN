@@ -40,7 +40,6 @@ function checkLogin(){
 			<a href="javascript:checkLogin()" class="shopping">购物车</a>
 			<a href="login.jsp">登录</a>
 			<a href="register.jsp">注册</a>
-			<a href="comment_list.action">留言</a>		
 		</c:otherwise>
 	</c:choose>
 </div>

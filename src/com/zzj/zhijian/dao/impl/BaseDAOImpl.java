@@ -9,8 +9,8 @@ import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import com.zzj.zhijian.bean.PageBean;
 import com.zzj.zhijian.dao.BaseDAO;
-import com.zzj.zhijian.entity.PageBean;
 
 @Repository("baseDAO")
 @SuppressWarnings("all")

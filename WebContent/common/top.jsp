@@ -9,6 +9,8 @@
 <script type="text/javascript" src="${pageContext.request.contextPath}/js/jquery-1.11.1.js"></script>
 <script src="${pageContext.request.contextPath}/js/My97DatePicker/WdatePicker.js"></script>
 <link type="text/css" rel="stylesheet" href="css/style.css" />
+<link type="text/css" rel="stylesheet"
+	href="${pageContext.request.contextPath}/css/buttons.css" />
 </head>
 <body>
 
@@ -19,7 +21,7 @@
 	<form action="product.action" method="post">
 		<input type="text" id="txtSearch" name="s_product.name"
 			onkeyup="" autocomplete="off" value="${s_product.name }" /> <input
-			type="submit" id="cmdSearch"  value="搜索" class="button"/><br/>
+			type="submit"  value="搜索" class="ebutton red"/><br/>
 		<div id="suggest" style="width: 200px"></div>
 	</form>
 	<div id="childNav">

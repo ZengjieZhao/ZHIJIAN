@@ -15,8 +15,8 @@ import org.apache.struts2.interceptor.ServletRequestAware;
 import org.springframework.stereotype.Controller;
 
 import com.opensymphony.xwork2.ActionSupport;
-import com.zzj.zhijian.entity.Comment;
-import com.zzj.zhijian.entity.PageBean;
+import com.zzj.zhijian.bean.Comment;
+import com.zzj.zhijian.bean.PageBean;
 import com.zzj.zhijian.service.CommentService;
 import com.zzj.zhijian.util.PageUtil;
 import com.zzj.zhijian.util.ResponseUtil;
@@ -64,6 +64,22 @@ public class CommentAction extends ActionSupport implements ServletRequestAware
 	private int commentId;
 
 	private String ids;
+	private JSONObject responseJson ; 
+	
+	public JSONObject getResponseJson()
+	{
+		return responseJson;
+	}
+
+	public void setResponseJson(JSONObject responseJson)
+	{
+		this.responseJson = responseJson;
+	}
+
+	public CommentAction()
+	{
+		responseJson = new JSONObject();
+	}
 
 	public String getIds()
 	{
@@ -180,7 +196,7 @@ public class CommentAction extends ActionSupport implements ServletRequestAware
 	}
 
 	/**
-	 * 后台留言分页查询
+	 * 后台留言查询
 	 * 
 	 * @return
 	 * @throws Exception
@@ -196,11 +212,10 @@ public class CommentAction extends ActionSupport implements ServletRequestAware
 		jsonConfig.registerJsonValueProcessor(java.util.Date.class,
 				new DateJsonValueProcessor("yyyy-MM-dd"));
 		JSONArray rows = JSONArray.fromObject(commentList, jsonConfig);
-		JSONObject result = new JSONObject();
-		result.put("rows", rows);
-		result.put("total", total);
-		ResponseUtil.write(ServletActionContext.getResponse(), result);
-		return null;
+		responseJson.clear();
+		responseJson.put("rows", rows);
+		responseJson.put("total", total);
+		return "json";
 	}
 
 	/**
@@ -220,8 +235,7 @@ public class CommentAction extends ActionSupport implements ServletRequestAware
 	}
 
 	/**
-	 * 通过id加载Comment实体
-	 * 
+	 * 通过id查找Comment
 	 * @return
 	 * @throws Exception
 	 */
@@ -231,14 +245,13 @@ public class CommentAction extends ActionSupport implements ServletRequestAware
 		JsonConfig jsonConfig = new JsonConfig();
 		jsonConfig.registerJsonValueProcessor(java.util.Date.class,
 				new DateJsonValueProcessor("yyyy-MM-dd"));
-		JSONObject result = JSONObject.fromObject(comment, jsonConfig);
-		ResponseUtil.write(ServletActionContext.getResponse(), result);
-		return null;
+		responseJson.clear();
+		responseJson = JSONObject.fromObject(comment, jsonConfig);
+		return "json";
 	}
 
 	/**
 	 * 回复留言
-	 * 
 	 * @return
 	 * @throws Exception
 	 */
@@ -246,21 +259,18 @@ public class CommentAction extends ActionSupport implements ServletRequestAware
 	{
 		comment.setReplyTime(new Date());
 		commentService.saveComment(comment);
-		JSONObject result = new JSONObject();
-		result.put("success", true);
-		ResponseUtil.write(ServletActionContext.getResponse(), result);
-		return null;
+		responseJson.clear();
+		responseJson.put("success", true);
+		return "json";
 	}
 
 	/**
 	 * 删除留言
-	 * 
 	 * @return
 	 * @throws Exception
 	 */
 	public String delete() throws Exception
 	{
-		JSONObject result = new JSONObject();
 		String[] idsStr = ids.split(",");
 		for (int i = 0; i < idsStr.length; i++)
 		{
@@ -268,9 +278,9 @@ public class CommentAction extends ActionSupport implements ServletRequestAware
 					.parseInt(idsStr[i]));
 			commentService.delete(comment);
 		}
-		result.put("success", true);
-		ResponseUtil.write(ServletActionContext.getResponse(), result);
-		return null;
+		responseJson.clear();
+		responseJson.put("success", true);
+		return "json";
 	}
 
 	@Override

@@ -26,7 +26,7 @@ if('${currentAdmin.name}' ==''){
 	function printPreview(){
 		var selectedRows=$("#dg").datagrid('getSelections');
 		if(selectedRows.length!=1){
-			$.messager.alert("系统提示","请选择一条要查看的数据！");
+			$.messager.alert("系统提示","请选择一条要打印的订单数据！");
 			return;
 		}
 		var row=selectedRows[0];
@@ -42,7 +42,10 @@ if('${currentAdmin.name}' ==''){
 	}
 	
 	function formatStatus(val,row){
-		if(val==1){
+		if(val==0){
+			return "未付款";
+		}
+		else if(val==1){
 			return "待审核";
 		}else if(val==2){
 			return "审核通过";
@@ -79,7 +82,9 @@ if('${currentAdmin.name}' ==''){
 		$("#user").val(row.user.userName+"(ID:"+row.user.id+")");
 		$("#cost").val(row.cost+"(元)");
 		var v=row.status;
-		if(v==1){
+		if(v==0){
+			$("#status").val("未付款");
+		}else if(v==1){
 			$("#status").val("待审核");
 		}else if(v==2){
 			$("#status").val("审核通过");

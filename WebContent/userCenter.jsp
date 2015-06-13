@@ -11,17 +11,16 @@
 <%@include file="common/sitenav.jsp" %>
 </div>
 <div style="clear: both;"></div>
-<div id="header" class="wrap">
+<div id="header" class="format">
 	<jsp:include page="common/top.jsp"/>
 </div>
 
-<div id="main" class="wrap">
+<div id="main" class="format">
 	<div id="menu-mng" class="lefter" >
 		<div class="box">
 			<dl>
-				<dt>用户管理</dt>
+				<dt>个人中心</dt>
 				<dd><a href="user_getUserInfo.action">个人信息管理</a></dd>
-				<dt>订单管理</dt>
 				<dd><a href="order_findOrder.action">个人订单管理</a></dd>
 			</dl>
 		</div>

@@ -10,14 +10,20 @@
 <script type="text/javascript" src="${pageContext.request.contextPath}/jquery-easyui-1.3.3/jquery.min.js"></script>
 <script type="text/javascript" src="${pageContext.request.contextPath}/jquery-easyui-1.3.3/jquery.easyui.min.js"></script>
 <script type="text/javascript" src="${pageContext.request.contextPath}/jquery-easyui-1.3.3/locale/easyui-lang-zh_CN.js"></script>
-<script type="text/javascript" src="${pageContext.request.contextPath}/js/jquery.base64.js"></script>
-<script type="text/javascript" src="${pageContext.request.contextPath}/js/tableExport.js"></script>
 <script type="text/javascript">
 if('${currentAdmin.name}' ==''){
 	alert('管理员未登录！请登录后操作');
 	window.parent.frames.location.href="login.jsp"; 
 }
 	var url;
+	
+	function formatStatus(val,row){
+		if(val == 1){
+			return "普通会员";
+		}else if(val == -1){
+			return "冻结会员";
+		}
+	}
 	
 	function searchUser(){
 		$("#dg").datagrid('load',{
@@ -91,6 +97,7 @@ if('${currentAdmin.name}' ==''){
 		}
 		var row=selectedRows[0];
 		$("#dlg").dialog("open").dialog("setTitle","编辑用户信息");
+		$("#status").combobox("setValue",row.status);
 		$("#trueName").val(row.trueName);
 		$("#userName").val(row.userName);
 		$("#password").val(row.password);
@@ -100,10 +107,13 @@ if('${currentAdmin.name}' ==''){
 		$("#email").val(row.email);
 		$("#mobile").val(row.mobile);
 		$("#address").val(row.address);
+		$("#createTime").val(row.createTime);
+		$("#balance").val(row.balance);
 		url="user_saveUser.action?user.id="+row.id;
 	}
 	
 	function resetValue(){
+		$("#status").combobox("setValue","");
 		$("#trueName").val("");
 		$("#userName").val("");
 		$("#password").val("");
@@ -113,6 +123,8 @@ if('${currentAdmin.name}' ==''){
 		$("#email").val("");
 		$("#mobile").val("");
 		$("#address").val("");
+		$("#createTime").val("");
+		$("#balance").val("");
 	}
 	
 	function closeUserDialog(){
@@ -137,6 +149,7 @@ if('${currentAdmin.name}' ==''){
 	 	<tr>
 	 		<th field="cb" checkbox="true" align="center"></th>
 	 		<th field="id" width="50" align="center">编号</th>
+	 		<th field="status" width="100" align="center" formatter="formatStatus">状态</th>
 	 		<th field="trueName" width="100" align="center">真实姓名</th>
 	 		<th field="userName" width="100" align="center">用户名</th>
 	 		<th field="password" width="100" align="center">密码</th>
@@ -147,6 +160,7 @@ if('${currentAdmin.name}' ==''){
 	 		<th field="mobile" width="100" align="center">联系电话</th>
 	 		<th field="address" width="100" align="center">收货地址</th>
 	 		<th field="createTime" width="100" align="center">创建时间</th>
+	 		<th field="balance" width="100" align="center">余额</th>
 	 	</tr>
 	 </thead>
 	</table>
@@ -165,6 +179,16 @@ if('${currentAdmin.name}' ==''){
 	  closed="true" buttons="#dlg-buttons">
 	 	<form id="fm" method="post">
 	 		<table cellspacing="8px">
+	 			<tr>
+	 				<td>状态：</td>
+	 				<td colspan="3">
+	 					<select class="easyui-combobox" id="status" name="user.status" style="width: 154px;" editable="false" panelHeight="auto">
+	 						<option value="">请选择状态</option>
+	 						<option value="1">普通会员</option>
+	 						<option value="-1">冻结会员</option>
+	 					</select>
+	 				</td>
+	 			</tr>
 	 			<tr>
 	 				<td>真实姓名：</td>
 	 				<td><input type="text" id="trueName" name="user.trueName" class="easyui-validatebox" required="true"/></td>
@@ -203,6 +227,13 @@ if('${currentAdmin.name}' ==''){
 	 				<td>收货地址：</td>
 	 				<td colspan="4">
 	 					<input type="text" id="address" name="user.address" class="easyui-validatebox" required="true" style="width: 350px;"/>
+	 					<input type="hidden" id="createTime" name="user.createTime"/>
+	 				</td>
+	 			</tr>
+	 			<tr>
+	 				<td>余额：</td>
+	 				<td colspan="4">
+	 					<input type="text" id="balance" name="user.balance" class="easyui-validatebox" required="true" style="width: 350px;"/>
 	 				</td>
 	 			</tr>
 	 		</table>

@@ -13,12 +13,11 @@ import org.apache.struts2.interceptor.ServletRequestAware;
 import org.springframework.stereotype.Controller;
 
 import com.opensymphony.xwork2.ActionSupport;
-import com.zzj.zhijian.entity.Product;
-import com.zzj.zhijian.entity.ShoppingCart;
-import com.zzj.zhijian.entity.ShoppingCartItem;
-import com.zzj.zhijian.entity.User;
+import com.zzj.zhijian.bean.Product;
+import com.zzj.zhijian.bean.ShoppingCart;
+import com.zzj.zhijian.bean.ShoppingCartItem;
+import com.zzj.zhijian.bean.User;
 import com.zzj.zhijian.service.ProductService;
-import com.zzj.zhijian.util.NavUtil;
 import com.zzj.zhijian.util.ResponseUtil;
 
 /**
@@ -43,6 +42,24 @@ public class ShoppingAction extends ActionSupport implements
 	private String navCode;
 
 	private int count;
+
+	
+	private JSONObject responseJson ; 
+	
+	public JSONObject getResponseJson()
+	{
+		return responseJson;
+	}
+
+	public void setResponseJson(JSONObject responseJson)
+	{
+		this.responseJson = responseJson;
+	}
+
+	public ShoppingAction()
+	{
+		responseJson = new JSONObject();
+	}
 
 	public int getCount()
 	{
@@ -132,12 +149,10 @@ public class ShoppingAction extends ActionSupport implements
 		}
 
 		session.setAttribute("shoppingCart", shoppingCart);
+		responseJson.clear();
+		responseJson.put("success", true);
 
-		JSONObject result = new JSONObject();
-		result.put("success", true);
-		ResponseUtil.write(ServletActionContext.getResponse(), result);
-
-		return null;
+		return "json";
 	}
 
 	/**
@@ -184,9 +199,9 @@ public class ShoppingAction extends ActionSupport implements
 
 		session.setAttribute("shoppingCart", shoppingCart);
 
-		mainPage = "shopping/shopping.jsp";
-		navCode = NavUtil.genNavCode("购物车");
-		return SUCCESS;
+		mainPage = "shopping/shoppingCart.jsp";
+		navCode = "购物车";
+		return "list";
 	}
 
 	/**
@@ -212,12 +227,9 @@ public class ShoppingAction extends ActionSupport implements
 		}
 
 		session.setAttribute("shoppingCart", shoppingCart);
-
-		JSONObject result = new JSONObject();
-		result.put("success", true);
-		ResponseUtil.write(ServletActionContext.getResponse(), result);
-
-		return null;
+		responseJson.clear();
+		responseJson.put("success", true);
+		return "json";
 	}
 
 	/**
@@ -254,8 +266,8 @@ public class ShoppingAction extends ActionSupport implements
 	 */
 	public String list() throws Exception
 	{
-		mainPage = "shopping/shopping.jsp";
-		navCode = NavUtil.genNavCode("购物车");
+		mainPage = "shopping/shoppingCart.jsp";
+		navCode = "购物车";
 		return SUCCESS;
 	}
 

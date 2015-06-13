@@ -55,8 +55,8 @@
 		}
 	}
 	function openPasswordModifyDialog() {
-		$("#dlg").dialog("open").dialog("setTitle", "修改密码");
-		url = "user_modifyPassword.action?user.id=${currentUser.id}";
+		$("#dlg").dialog("open").dialog("setTitle", "修改当前管理员密码");
+		url = "user_modifyPassword.action?admin.id=${currentAdmin.id}";
 	}
 
 	function closePasswordModifyDialog() {
@@ -76,8 +76,8 @@
 				if (!$(this).form("validate")) {
 					return false;
 				}
-				if (oldPassword != '${currentUser.password}') {
-					$.messager.alert("系统提示", "用户密码输入错误！");
+				if (oldPassword != '${currentAdmin.password}') {
+					$.messager.alert("系统提示", "原密码输入不正确！");
 					return false;
 				}
 				if (newPassword != newPassword2) {
@@ -127,10 +127,14 @@
 					<h1 style="color: #0E2D5F;"><span style="font-weight:bold;font-family: '微软雅黑';line-height:10px;">至简网商城后台管理系统</span></h1>
 				</td>
 				<td valign="middle" align="right" width="50%">
-				<span style="font-weight:bold;font-family: '微软雅黑';color: #0E2D5F; "><strong>欢迎：</strong>${currentAdmin.name }</span>
+				<span style="font-weight:bold;font-family: '微软雅黑';color: #0E2D5F; "><strong>欢迎：</strong><a class="easyui-linkbutton" data-options="plain:true,iconCls:'icon-administrator'" href="javascript: void(0);">${currentAdmin.name }</a></span>
+				<a class="easyui-linkbutton" data-options="plain:true,iconCls:'icon-reload'" href="javascript: location.reload();">刷新主页</a>
+				<a href="javascript:refreshSystem()" class="easyui-linkbutton"
+					data-options="plain:true,iconCls:'icon-refresh'"
+					style="width: auto;">刷新服务器缓存数据</a>
 				<a href="javascript:logout()"
 					class="easyui-linkbutton"
-					data-options="plain:true,iconCls:'icon-exit'" style="width: auto;">安全退出&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</a>
+					data-options="plain:true,iconCls:'icon-exit'" style="width: auto;">退出系统&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</a>
 				</td>
 			</tr>
 		</table>
@@ -214,14 +218,8 @@
 					data-options="plain:true,iconCls:'icon-tag'"
 					style="width: 98.2px;">管理标签</a>
 			</div>
-			<div title="统计报表" data-options="iconCls:'icon-detail'">
-			</div>
-			<div title="系统管理" data-options="iconCls:'icon-item'"
-				style="padding: 10px">
-				<a href="javascript:refreshSystem()" class="easyui-linkbutton"
-					data-options="plain:true,iconCls:'icon-refresh'"
-					style="width: auto;">刷新系统缓存</a>
-			</div>
+		<!-- 	<div title="统计报表" data-options="iconCls:'icon-detail'">
+			</div> -->
 		</div>
 	</div>
 	<div region="south" style="height: 25px; padding: 5px; background-color: #E0ECFF; overflow: visible;" border="true" align="center">
@@ -235,19 +233,19 @@
 			<table cellspacing="8px">
 				<tr>
 					<td>用户名：</td>
-					<td><input type="text" id="userName" name="user.userName"
+					<td><input type="text" id="userName" name="admin.name"
 						value="${currentAdmin.name }" readonly="readonly"
 						style="width: 200px" /></td>
 				</tr>
 				<tr>
 					<td>原密码：</td>
 					<td><input type="password" id="oldPassword"
-						class="easyui-validatebox" required="true" style="width: 200px" /></td>
+						class="easyui-validatebox" required="true"  style="width: 200px" /></td>
 				</tr>
 				<tr>
 					<td>新密码：</td>
 					<td><input type="password" id="newPassword"
-						name="user.password" class="easyui-validatebox" required="true"
+						name="admin.password" class="easyui-validatebox" required="true"
 						style="width: 200px" /></td>
 				</tr>
 				<tr>

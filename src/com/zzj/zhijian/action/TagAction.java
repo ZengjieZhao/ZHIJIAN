@@ -11,8 +11,8 @@ import org.apache.struts2.ServletActionContext;
 import org.springframework.stereotype.Controller;
 
 import com.opensymphony.xwork2.ActionSupport;
-import com.zzj.zhijian.entity.PageBean;
-import com.zzj.zhijian.entity.Tag;
+import com.zzj.zhijian.bean.PageBean;
+import com.zzj.zhijian.bean.Tag;
 import com.zzj.zhijian.service.TagService;
 import com.zzj.zhijian.util.ResponseUtil;
 
@@ -43,6 +43,22 @@ public class TagAction extends ActionSupport
 	private String rows;
 	private Tag s_tag;
 	private String ids;
+	private JSONObject responseJson ; 
+	
+	public JSONObject getResponseJson()
+	{
+		return responseJson;
+	}
+
+	public void setResponseJson(JSONObject responseJson)
+	{
+		this.responseJson = responseJson;
+	}
+
+	public TagAction()
+	{
+		responseJson = new JSONObject();
+	}
 
 	public Tag getTag()
 	{
@@ -137,11 +153,10 @@ public class TagAction extends ActionSupport
 		List<Tag> tagList = tagService.findTagList(s_tag, pageBean);
 		long total = tagService.getTagCount(s_tag);
 		JSONArray rows = JSONArray.fromObject(tagList);
-		JSONObject result = new JSONObject();
-		result.put("rows", rows);
-		result.put("total", total);
-		ResponseUtil.write(ServletActionContext.getResponse(), result);
-		return null;
+		responseJson.clear();
+		responseJson.put("rows", rows);
+		responseJson.put("total", total);
+		return "json";
 	}
 
 	/**
@@ -153,10 +168,9 @@ public class TagAction extends ActionSupport
 	public String save() throws Exception
 	{
 		tagService.saveTag(tag);
-		JSONObject result = new JSONObject();
-		result.put("success", true);
-		ResponseUtil.write(ServletActionContext.getResponse(), result);
-		return null;
+		responseJson.clear();
+		responseJson.put("success", true);
+		return "json";
 	}
 
 	/**
@@ -167,16 +181,15 @@ public class TagAction extends ActionSupport
 	 */
 	public String delete() throws Exception
 	{
-		JSONObject result = new JSONObject();
 		String[] idsStr = ids.split(",");
 		for (int i = 0; i < idsStr.length; i++)
 		{
 			Tag tag = tagService.getTagById(Integer.parseInt(idsStr[i]));
 			tagService.delete(tag);
 		}
-		result.put("success", true);
-		ResponseUtil.write(ServletActionContext.getResponse(), result);
-		return null;
+		responseJson.clear();
+		responseJson.put("success", true);
+		return "json";
 	}
 
 }

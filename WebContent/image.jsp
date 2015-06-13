@@ -14,7 +14,7 @@ return new Color(r,g,b);
 }
 %>
 <%
-out.clear();//这句针对resin服务器，如果是tomacat可以不要这句
+out.clear();
 response.setHeader("Pragma","No-cache");
 response.setHeader("Cache-Control","no-cache");
 response.setDateHeader("Expires", 0);

@@ -7,6 +7,6 @@
 <title>脚注</title>
 </head>
 <body>
-Copyright &copy; 2014 ZHIJIAN All Rights Reserved.
+电话：13864267332 Copyright &copy; 2014 ZHIJIAN 版权所有.
 </body>
 </html>

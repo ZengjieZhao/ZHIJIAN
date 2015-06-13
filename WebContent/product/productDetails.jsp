@@ -10,9 +10,8 @@
 		if('${currentUser.userName}'==''){
 			alert("请先登录，然后购物！");
 		}else{
-			$.post("shopping_addShoppingCartItem.action",{productId:productId},
+			$.post("shopping_addShoppingCartItem.action",{'productId':productId},
 				function(result){
-					var result=eval('('+result+')');
 					if(result.success){
 						alert("已成功加入购物车！");
 						location.reload();

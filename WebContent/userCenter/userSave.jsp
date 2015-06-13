@@ -48,7 +48,7 @@
 </script>
 </head>
 <body>
-<h2>修改用户</h2>
+<h2>用户信息修改</h2>
 <div class="manage">
 	<form action="user_save.action" method="post" onsubmit="return checkForm()">
 		<table class="form">

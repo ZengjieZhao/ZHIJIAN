@@ -13,12 +13,12 @@
 <%@include file="common/sitenav.jsp" %>
 </div>
 <div style="clear: both;"></div>
-<div id="header" class="wrap">
+<div id="header" class="format">
 	<jsp:include page="common/top.jsp"/>
 </div>
 
 	
-<div id="main" class="wrap">
+<div id="main" class="format">
 	<div class="lefter">
 		<jsp:include page="common/left.jsp"/>
 	</div>

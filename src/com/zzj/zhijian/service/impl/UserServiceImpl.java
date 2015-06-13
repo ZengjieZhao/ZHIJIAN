@@ -9,10 +9,10 @@ import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
 
+import com.zzj.zhijian.bean.DataCount;
+import com.zzj.zhijian.bean.PageBean;
+import com.zzj.zhijian.bean.User;
 import com.zzj.zhijian.dao.BaseDAO;
-import com.zzj.zhijian.entity.DataCount;
-import com.zzj.zhijian.entity.PageBean;
-import com.zzj.zhijian.entity.User;
 import com.zzj.zhijian.service.UserService;
 import com.zzj.zhijian.util.StringUtil;
 
@@ -104,12 +104,13 @@ public class UserServiceImpl implements UserService
 				hql.append(" and userName like ? ");
 				param.add("%" + s_user.getUserName() + "%");
 			}
-			if(s_user.getOrderList()!=null&&!(s_user.getOrderList().size()>0))
+			if(s_user.getOrderList()!=null&&s_user.getOrderList().size()==0)
 			{
 				hql.append(" and size(u.orderList)<=0 ");
 			}
 		}
 		hql.append(" and status=1");
+		System.out.println("usercount:"+hql.toString());
 		return baseDAO
 				.count(hql.toString().replaceFirst("and", "where"), param);
 	}
@@ -138,7 +139,7 @@ public class UserServiceImpl implements UserService
 		if (n == 1)
 		{
 			// 当天每小时
-			hql = "select new com.zzj.zhijian.entity.DataCount(hour(createTime) as time, count(1) as count)  from User where year(createTime)="
+			hql = "select new com.zzj.zhijian.bean.DataCount(hour(createTime) as time, count(1) as count)  from User where year(createTime)="
 					+ year
 					+ " and month(createTime)="
 					+ (month + 1)
@@ -176,13 +177,13 @@ public class UserServiceImpl implements UserService
 		} else if (n == 2)
 		{
 			// 每星期
-			hql = "select new com.zzj.zhijian.entity.DataCount(hour(createTime) as time, count(1) as count)  from User where year(createTime)="
+			hql = "select new com.zzj.zhijian.bean.DataCount(hour(createTime) as time, count(1) as count)  from User where year(createTime)="
 					+ year + " group by hour(createTime)";
 
 		} else if (n == 3)
 		{
 			// 当月每天
-			hql = "select new com.zzj.zhijian.entity.DataCount(day(createTime) as time, count(1) as count)  from User where year(createTime)="
+			hql = "select new com.zzj.zhijian.bean.DataCount(day(createTime) as time, count(1) as count)  from User where year(createTime)="
 					+ year
 					+ " and month(createTime)="
 					+ (month + 1)
@@ -217,7 +218,7 @@ public class UserServiceImpl implements UserService
 		} else if (n == 4)
 		{
 			// 当年每月
-			hql = "select new com.zzj.zhijian.entity.DataCount(month(createTime) as time, count(1) as count)  from User where year(createTime)="
+			hql = "select new com.zzj.zhijian.bean.DataCount(month(createTime) as time, count(1) as count)  from User where year(createTime)="
 					+ year + " group by month(createTime)";
 			dataCount = new ArrayList<DataCount>(12);
 			for (int i = 1; i < 13; i++)
